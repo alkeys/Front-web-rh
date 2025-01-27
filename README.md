@@ -34,3 +34,10 @@ para mas tarde xd
 http://localhost:8080/swagger-ui/index.html
       """
 
+[![Screenshot-2025-01-27-at-09-25-17-RRHH.png](https://i.postimg.cc/m2F8MjTk/Screenshot-2025-01-27-at-09-25-17-RRHH.png)](https://postimg.cc/CzSGpjBp)
+
+[![Screenshot-2025-01-27-at-09-25-56-RRHH.png](https://i.postimg.cc/htWM0mGr/Screenshot-2025-01-27-at-09-25-56-RRHH.png)](https://postimg.cc/Wh8MNhgF)
+
+[![Screenshot-2025-01-27-at-09-12-35-RRHH.png](https://i.postimg.cc/Dwr6pzJK/Screenshot-2025-01-27-at-09-12-35-RRHH.png)](https://postimg.cc/Bjv2X4Bh)
+
+[![Screenshot-2025-01-27-at-09-12-13-RRHH.png](https://i.postimg.cc/nLnkytB9/Screenshot-2025-01-27-at-09-12-13-RRHH.png)](https://postimg.cc/YvyYFZXt)
