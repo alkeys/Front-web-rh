@@ -42,5 +42,4 @@ http://localhost:8080/swagger-ui/index.html
 
 [![Screenshot-2025-01-27-at-09-12-35-RRHH.png](https://i.postimg.cc/Dwr6pzJK/Screenshot-2025-01-27-at-09-12-35-RRHH.png)](https://postimg.cc/Bjv2X4Bh)
 
-
-[![Screenshot-2025-01-27-at-09-12-13-RRHH.png](https://i.postimg.cc/nLnkytB9/Screenshot-2025-01-27-at-09-12-13-RRHH.png)](https://postimg.cc/YvyYFZXt)
+[![Screenshot-2025-01-27-at-09-28-12-RRHH.png](https://i.postimg.cc/ZRRLqFfT/Screenshot-2025-01-27-at-09-28-12-RRHH.png)](https://postimg.cc/sBkW6Sd8)
