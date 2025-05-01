@@ -51,7 +51,12 @@ export default function Login() {
                 return;
             }
             setUser(userData); // Guardamos el usuario en el contexto
+            if (userData.rol === 'admin') {
             navigate('/Dashboard'); // Redirigimos al Dashboard
+            }
+            if (userData.rol === 'evaluador') {
+                navigate('/Evaluaciones'); // Redirigimos a Evaluaciones
+            }
             setLoading(false); // Detener la carga
         } catch (error) {
             setError('Hubo un problema al iniciar sesión. Intenta nuevamente.');

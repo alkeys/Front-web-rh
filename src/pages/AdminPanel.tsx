@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserContext } from '../context/UserContext';
 import Dashboard from '../component/admin/Dashboard';
 import Empleados from './Empleados';
 import Departamento from './Departamento';
 import Ajustes from './Ajustes';
+import Evaluaciones from './Evaluaciones';
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('dashboard')
@@ -18,15 +19,13 @@ export default function AdminPanel() {
   * del usuario mediante  parametro  de props
   */
   const CargarUrlActivo = ({ estado }: { estado: boolean }) => {
-    const urldata = `${urlapiEstado}?id=${user.id}&active=${estado}`;
+    const urldata = user ? `${urlapiEstado}?id=${user.id}&active=${estado}` : '';
     return urldata;
   };
 
 
 
-
-
-  useState(() => {
+  useEffect(() => {
     if (!user) {
       // window.location.href = '/login';
     } else {
@@ -76,6 +75,8 @@ export default function AdminPanel() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'evaluaciones':
+        return <Evaluaciones />
       case 'dashboard':
         return <Dashboard />
       case 'employees':
@@ -113,6 +114,16 @@ export default function AdminPanel() {
                     >
                         Empleados
                     </button>
+
+                    <button
+                        className={`px-4 py-2 rounded-md ${
+                            activeTab === 'evaluaciones' ? 'bg-green-600' : 'hover:bg-green-600'
+                        }`}
+                        onClick={() => setActiveTab('evaluaciones')}
+                    >
+                        Evaluaciones
+                    </button>
+
                     <button
                         className={`px-4 py-2 rounded-md ${
                             activeTab === 'jobs' ? 'bg-green-600' : 'hover:bg-green-600'

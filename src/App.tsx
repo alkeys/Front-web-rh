@@ -5,6 +5,7 @@ import Home from './pages/Home'
 import Login from './pages/Login'
 import { UserProvider } from './context/UserContext'
 import AdminPanel from './pages/AdminPanel'
+import PaginaParaEvaluarEmpleado from './pages/pagesEvaluaciones/PaginaParaEvaluarEmpleado'
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/Dashboard" element={<AdminPanel/>} />
+        <Route path="/Evaluaciones" element={<PaginaParaEvaluarEmpleado/>} />
       </Routes>
     </Router>
     </UserProvider>
