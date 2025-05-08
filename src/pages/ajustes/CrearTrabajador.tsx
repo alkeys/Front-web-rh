@@ -39,9 +39,10 @@ const CrearTrabajador: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
     
-        const queryParams = new URLSearchParams({
-            DepartamentoId: formData.departamento_id,
-            CargoId: formData.cargo_id,
+        // Validar que todos los campos estén completos esto puede ser mejorado
+        const queryParams = new URLSearchParams({  // esto es para enviar los datos por query params
+            DepartamentoId: formData.departamento_id, //esto sirve para enviar el id del departamento
+            CargoId: formData.cargo_id, //esto sirve para enviar el id del cargo
         }).toString();
     
         try {
