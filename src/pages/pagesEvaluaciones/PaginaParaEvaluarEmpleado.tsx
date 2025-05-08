@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useUserContext } from "../../context/UserContext";
+import { FaUserTie, FaBuilding, FaUserCheck } from "react-icons/fa";
 
 const PaginaParaEvaluarEmpleado: React.FC = () => {
     const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -30,30 +31,36 @@ const PaginaParaEvaluarEmpleado: React.FC = () => {
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-        alert(`Evaluador: ${evaluator}\nDepartamento: ${selectedDepartment}\nEmpleado: ${selectedEmployee}`);
+        if (!evaluator || !selectedDepartment || !selectedEmployee) {
+            alert("Por favor, complete todos los campos antes de enviar la evaluación.");
+            return;
+        }
+        alert(`✅ Evaluación enviada con éxito!\n\nEvaluador: ${evaluator}\nDepartamento: ${selectedDepartment}\nEmpleado: ${selectedEmployee}`);
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 p-6">
-            <div className="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">Evaluar Empleado</h1>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-medium mb-2">Evaluador</label>
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6">
+            <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-xl p-8">
+                <h1 className="text-3xl font-extrabold text-center text-blue-700 mb-6 flex items-center justify-center gap-3">
+                    <FaUserCheck className="text-green-500" /> Evaluación de Empleados
+                </h1>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">Evaluador</label>
                         <input
                             type="text"
                             value={evaluator}
                             onChange={handleEvaluatorChange}
                             placeholder="Nombre del evaluador"
-                            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 font-medium mb-2">Departamento</label>
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">Departamento</label>
                         <select
                             value={selectedDepartment}
                             onChange={handleDepartmentChange}
-                            className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
                         >
                             <option value="">Selecciona un departamento</option>
                             {departments.map((department) => (
@@ -64,12 +71,12 @@ const PaginaParaEvaluarEmpleado: React.FC = () => {
                         </select>
                     </div>
                     {selectedDepartment && (
-                        <div className="mb-4">
-                            <label className="block text-gray-700 font-medium mb-2">Empleado</label>
+                        <div>
+                            <label className="block text-gray-700 font-semibold mb-2">Empleado</label>
                             <select
                                 value={selectedEmployee}
                                 onChange={handleEmployeeChange}
-                                className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm"
                             >
                                 <option value="">Selecciona un empleado</option>
                                 {employees[selectedDepartment]?.map((employee: string) => (
@@ -80,12 +87,12 @@ const PaginaParaEvaluarEmpleado: React.FC = () => {
                             </select>
                         </div>
                     )}
-                    <div className="mb-6">
-                        <label className="block text-gray-700 font-medium mb-2">Preguntas de Evaluación</label>
-                        <div className="space-y-4">
+                    <div>
+                        <label className="block text-gray-700 font-semibold mb-2">Preguntas de Evaluación</label>
+                        <div className="space-y-5">
                             <div>
-                                <p className="text-gray-700">1. ¿Cómo calificarías el desempeño del empleado?</p>
-                                <select className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p className="text-gray-700 font-medium">1. ¿Cómo calificarías el desempeño del empleado?</p>
+                                <select className="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                     <option value="">Selecciona una opción</option>
                                     <option value="1">1 - Muy malo</option>
                                     <option value="2">2 - Malo</option>
@@ -95,8 +102,8 @@ const PaginaParaEvaluarEmpleado: React.FC = () => {
                                 </select>
                             </div>
                             <div>
-                                <p className="text-gray-700">2. ¿El empleado cumple con los objetivos asignados?</p>
-                                <select className="w-full border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <p className="text-gray-700 font-medium">2. ¿El empleado cumple con los objetivos asignados?</p>
+                                <select className="mt-1 w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-400">
                                     <option value="">Selecciona una opción</option>
                                     <option value="1">1 - Nunca</option>
                                     <option value="2">2 - Rara vez</option>
@@ -109,7 +116,7 @@ const PaginaParaEvaluarEmpleado: React.FC = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white font-medium py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full bg-gradient-to-r from-blue-500 to-green-500 text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow"
                     >
                         Enviar Evaluación
                     </button>

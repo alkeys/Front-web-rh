@@ -3,12 +3,25 @@ import { Bar, Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { ChartData } from 'chart.js';
 
+interface Evaluacion {
+    pregunta: string;
+    puntaje: number;
+    comentario: string;
+    fecha: string;
+}
+
+interface Empleado {
+    nombre: string;
+    departamento: string;
+    evaluaciones: Evaluacion[];
+}
+
 const Evaluaciones: React.FC = () => {
     const url = import.meta.env.VITE_API_URL_EVALUACIONES_ALL;
-    const [empleados, setEmpleados] = useState<any[]>([]);
+    const [empleados, setEmpleados] = useState<Empleado[]>([]);
     const [departamentos, setDepartamentos] = useState<string[]>([]);
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState<string>('');
-    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState<any | null>(null);
+    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState<Empleado | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -17,11 +30,11 @@ const Evaluaciones: React.FC = () => {
                 if (!response.ok) throw new Error('Error en la respuesta de la API');
                 const data = await response.json();
 
-                const agrupados = data.reduce((acc: any[], item: any) => {
+                const agrupados: Empleado[] = data.reduce((acc: Empleado[], item: any) => {
                     const nombreCompleto = `${item.empleado.nombre} ${item.empleado.apellido}`;
                     const departamento = item.empleado.departamento.nombre;
 
-                    const nuevaEvaluacion = {
+                    const nuevaEvaluacion: Evaluacion = {
                         pregunta: item.pregunta.pregunta,
                         puntaje: item.calificacion * 20,
                         comentario: item.comentario,
@@ -57,39 +70,37 @@ const Evaluaciones: React.FC = () => {
 
     const empleadosFiltrados = empleados.filter(e => e.departamento === departamentoSeleccionado);
 
-    const preguntasSeleccionado = empleadoSeleccionado?.evaluaciones.map((ev: any) => ev.pregunta) || [];
+    const preguntasFiltradas = empleadoSeleccionado?.evaluaciones
+        .map(ev => ev.pregunta)
+        .filter(pregunta =>
+            empleadosFiltrados.some(emp =>
+                emp.nombre !== empleadoSeleccionado.nombre &&
+                emp.evaluaciones.some(ev => ev.pregunta === pregunta)
+            )
+        ) || [];
 
-    const preguntasFiltradas = preguntasSeleccionado.filter((pregunta) =>
-        empleadosFiltrados.some(emp =>
-            emp.nombre !== empleadoSeleccionado?.nombre &&
-            emp.evaluaciones.some((ev: any) => ev.pregunta === pregunta)
-        )
-    );
+    const coloresPastel = ['#a8dadc', '#f4a261', '#e76f51', '#2a9d8f', '#264653', '#ffafcc'];
 
     const datasetSeleccionado = {
         label: empleadoSeleccionado?.nombre || 'Empleado',
-        data: preguntasFiltradas.map((pregunta) => {
-            const ev = empleadoSeleccionado?.evaluaciones.find((ev: any) => ev.pregunta === pregunta);
-            return ev ? ev.puntaje : 0;
-        }),
-        backgroundColor: '#2196f3',
+        data: preguntasFiltradas.map(pregunta =>
+            empleadoSeleccionado?.evaluaciones.find(ev => ev.pregunta === pregunta)?.puntaje || 0
+        ),
+        backgroundColor: '#00b4d8',
+        borderRadius: 8,
     };
 
     const datasetPromedio = {
         label: 'Promedio del Departamento',
-        data: preguntasFiltradas.map((pregunta) => {
+        data: preguntasFiltradas.map(pregunta => {
             const puntajes = empleadosFiltrados
                 .filter(emp => emp.nombre !== empleadoSeleccionado?.nombre)
-                .map(emp => {
-                    const ev = emp.evaluaciones.find((ev: any) => ev.pregunta === pregunta);
-                    return ev ? ev.puntaje : null;
-                })
-                .filter(p => p !== null) as number[];
-
-            const promedio = puntajes.length > 0 ? puntajes.reduce((a, b) => a + b, 0) / puntajes.length : 0;
-            return promedio;
+                .map(emp => emp.evaluaciones.find(ev => ev.pregunta === pregunta)?.puntaje || 0)
+                .filter(p => p > 0);
+            return puntajes.length ? puntajes.reduce((a, b) => a + b, 0) / puntajes.length : 0;
         }),
-        backgroundColor: '#4caf50',
+        backgroundColor: '#90e0ef',
+        borderRadius: 8,
     };
 
     const barChartData: ChartData<'bar'> = {
@@ -106,29 +117,12 @@ const Evaluaciones: React.FC = () => {
                     label: (context: any) => `${context.dataset.label}: ${context.parsed.y.toFixed(1)}%`,
                 },
             },
-            legend: {
-                position: 'top' as const,
-                labels: {
-                    font: { size: 12 },
-                },
-            },
         },
         scales: {
-            x: {
-                ticks: {
-                    autoSkip: false,
-                    maxRotation: 30,
-                    minRotation: 0,
-                    font: { size: 11 },
-                },
-            },
             y: {
                 beginAtZero: true,
                 max: 100,
-                ticks: {
-                    stepSize: 20,
-                    font: { size: 12 },
-                },
+                ticks: { stepSize: 20 },
             },
         },
     };
@@ -138,19 +132,20 @@ const Evaluaciones: React.FC = () => {
         datasets: [{
             label: 'Distribución de Evaluaciones',
             data: empleadoSeleccionado?.evaluaciones.map(ev => ev.puntaje),
-            backgroundColor: ['#2196f3', '#ff9800', '#f44336', '#9c27b0', '#00bcd4', '#4caf50'],
+            backgroundColor: empleadoSeleccionado?.evaluaciones.map((_, i) => coloresPastel[i % coloresPastel.length]),
         }],
     };
 
-    return (
-        <div className="p-8 bg-gray-100 min-h-screen">
-            <h1 className="text-3xl font-bold mb-6">Evaluaciones de Empleados</h1>
+    const requiereAtencion = empleadoSeleccionado?.evaluaciones.some(ev => ev.puntaje < 60);
 
-            {/* Filtro por departamento */}
-            <div className="mb-6">
-                <label className="block font-semibold mb-2">Filtrar por departamento:</label>
+    return (
+        <div className="p-8 bg-gradient-to-tr from-green-100 via-white to-blue-100 min-h-screen">
+            <h1 className="text-4xl font-extrabold text-center text-green-800 mb-8">Evaluaciones de Empleados</h1>
+
+            <div className="mb-8 max-w-xs mx-auto">
+                <label className="block mb-2 font-medium">Filtrar por departamento:</label>
                 <select
-                    className="p-2 rounded border"
+                    className="p-2 border border-gray-300 rounded w-full shadow focus:outline-none focus:ring-2 focus:ring-green-400"
                     value={departamentoSeleccionado}
                     onChange={(e) => setDepartamentoSeleccionado(e.target.value)}
                 >
@@ -161,78 +156,69 @@ const Evaluaciones: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Lista de empleados */}
-                <div className="bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-lg font-semibold mb-4">Empleados</h2>
-                    <ul>
+                <div className="bg-white p-4 shadow rounded-lg">
+                    <h2 className="text-lg font-semibold mb-4 text-green-700">Empleados</h2>
+                    <ul className="space-y-2">
                         {empleadosFiltrados.map((empleado, idx) => (
                             <li
                                 key={idx}
                                 onClick={() => setEmpleadoSeleccionado(empleado)}
-                                className={`cursor-pointer p-2 rounded hover:bg-gray-100 ${
-                                    empleadoSeleccionado?.nombre === empleado.nombre ? 'bg-blue-100' : ''
+                                className={`p-3 rounded-lg cursor-pointer border ${
+                                    empleadoSeleccionado?.nombre === empleado.nombre
+                                        ? 'bg-green-100 border-green-300'
+                                        : 'hover:bg-gray-50 border-gray-200'
                                 }`}
                             >
-                                <p className="font-medium">{empleado.nombre}</p>
-                                <p className="text-sm text-gray-500">Evaluaciones: {empleado.evaluaciones.length}</p>
+                                <p className="font-medium text-green-900">{empleado.nombre}</p>
+                                <p className="text-sm text-gray-500">{empleado.evaluaciones.length} evaluaciones</p>
                             </li>
                         ))}
                     </ul>
                 </div>
 
-                {/* Gráfica de comparación */}
-                <div className="col-span-2 bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-lg font-semibold mb-4">Comparativa por Pregunta</h2>
-                    <div className="h-[450px]">
+                <div className="md:col-span-2 bg-white p-4 shadow rounded-lg">
+                    <h2 className="text-lg font-semibold mb-4 text-blue-700">Comparativa por Pregunta</h2>
+                    <div className="h-[400px]">
                         <Bar data={barChartData} options={barChartOptions} />
                     </div>
                 </div>
             </div>
 
-            {/* Gráfica de pastel individual */}
             {empleadoSeleccionado && (
-                <div className="mt-10 bg-white shadow-md rounded-lg p-4">
-                    <h2 className="text-lg font-semibold mb-4">Distribución Individual de {empleadoSeleccionado.nombre}</h2>
-                    <div className="h-[400px]">
-                        <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
-                    </div>
-                </div>
-            )}
-
-            {/* Detalle de evaluaciones */}
-            {empleadoSeleccionado && (
-                <div className="mt-10 bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Detalle de Evaluaciones de {empleadoSeleccionado.nombre}</h2>
-
-                    {/* Ventana de alerta */}
-                    <div className={`mb-6 p-4 rounded text-sm font-medium border
-                        ${empleadoSeleccionado.evaluaciones.some((ev: any) => ev.puntaje < 60)
-                            ? 'bg-red-100 text-red-800 border-red-300'
-                            : 'bg-green-100 text-green-800 border-green-300'}`}>
-                        {empleadoSeleccionado.evaluaciones.some((ev: any) => ev.puntaje < 60)
-                            ? 'Este empleado requiere atención en una o más evaluaciones.'
-                            : 'Este empleado tiene un desempeño aceptable en todas las evaluaciones.'}
+                <>
+                    <div className="mt-10 bg-white shadow rounded-lg p-6">
+                        <h2 className="text-lg font-semibold mb-4 text-indigo-700">Distribución de {empleadoSeleccionado.nombre}</h2>
+                        <div className="h-[400px]">
+                            <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                        </div>
                     </div>
 
-                    <ul className="space-y-4">
-                        {empleadoSeleccionado.evaluaciones.map((ev: any, idx: number) => (
-                            <li key={idx} className="border-b pb-2">
-                                <p className="font-medium">Pregunta: {ev.pregunta}</p>
-                                <p className="text-sm">Comentario: {ev.comentario}</p>
-                                <p className="text-sm">Puntaje: {ev.puntaje}%</p>
-                                <p className="text-sm">
-                                    Fecha: {ev.fecha
-                                        ? new Date(ev.fecha).toLocaleDateString('es-SV', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })
-                                        : 'Sin fecha'}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                    <div className="mt-10 bg-white shadow rounded-lg p-6">
+                        <h2 className="text-xl font-bold mb-4 text-gray-800">Detalle de Evaluaciones</h2>
+                        <div className={`p-4 mb-6 rounded-lg font-medium text-center text-sm border ${
+                            requiereAtencion
+                                ? 'bg-red-100 text-red-700 border-red-300'
+                                : 'bg-green-100 text-green-700 border-green-300'
+                        }`}>
+                            {requiereAtencion
+                                ? '⚠️ Este empleado requiere atención en una o más evaluaciones.'
+                                : '✅ Este empleado tiene un desempeño aceptable en todas las evaluaciones.'}
+                        </div>
+
+                        <ul className="space-y-4">
+                            {empleadoSeleccionado.evaluaciones.map((ev, idx) => (
+                                <li key={idx} className="border-b pb-2">
+                                    <p className="font-semibold text-gray-700">Pregunta: {ev.pregunta}</p>
+                                    <p className="text-sm text-gray-600">Comentario: {ev.comentario}</p>
+                                    <p className="text-sm">Puntaje: <span className={ev.puntaje < 60 ? 'text-red-600 font-bold' : ''}>{ev.puntaje}%</span></p>
+                                    <p className="text-sm">Fecha: {new Date(ev.fecha).toLocaleDateString('es-SV', {
+                                        year: 'numeric', month: 'long', day: 'numeric'
+                                    })}</p>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </>
             )}
         </div>
     );

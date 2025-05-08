@@ -49,14 +49,12 @@ const Departamento: React.FC = () => {
         setDepartamentosFiltrados(resultado);
     }, [busqueda, departamentos]);
 
-    // 🎨 Colores variados
     const colores = [
-        '#4caf50', '#2196f3', '#ff9800', '#f44336', '#9c27b0',
-        '#00bcd4', '#e91e63', '#795548', '#607d8b', '#8bc34a',
-        '#ffc107', '#3f51b5', '#009688', '#cddc39', '#ff5722'
+        '#4ade80', '#60a5fa', '#facc15', '#f87171', '#a78bfa',
+        '#14b8a6', '#f472b6', '#f97316', '#38bdf8', '#34d399',
+        '#eab308', '#6366f1', '#06b6d4', '#84cc16', '#fb923c'
     ];
 
-    // 📊 Datos para gráfica
     const chartData = {
         labels: departamentosFiltrados.map(d => d.nombre),
         datasets: [
@@ -83,41 +81,37 @@ const Departamento: React.FC = () => {
     };
 
     return (
-        <div className="p-4 space-y-4">
-            {/* ✅ Tarjeta resumen */}
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <div className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition">
+        <div className="p-6 space-y-6 bg-gradient-to-b from-gray-50 to-white min-h-screen">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition">
                     <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-sm font-medium">Total Departamentos</h3>
-                        <FaBuilding className="text-gray-500" />
+                        <h3 className="text-sm font-semibold text-gray-700">Total Departamentos</h3>
+                        <FaBuilding className="text-green-600 text-xl" />
                     </div>
-                    <div className="text-2xl font-bold">{count}</div>
+                    <div className="text-3xl font-bold text-green-700">{count}</div>
                     <p className="text-xs text-gray-500">Departamentos activos en la organización</p>
                 </div>
             </div>
 
-            {/* 🔍 Filtro de búsqueda */}
-            <div className="flex items-center gap-2 bg-white p-4 rounded shadow">
+            <div className="flex items-center gap-3 bg-white p-4 rounded-lg shadow-md">
                 <FaSearch className="text-gray-500" />
                 <input
                     type="text"
                     placeholder="Buscar departamento..."
-                    className="flex-1 border-none outline-none"
+                    className="flex-1 border-none outline-none text-sm"
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                 />
             </div>
 
-            {/* 📊 Gráfica de barras */}
-            <div className="bg-white shadow-md rounded-lg p-4">
-                <h2 className="text-lg font-semibold mb-4">Gráfica de Empleados por Departamento</h2>
+            <div className="bg-white shadow-md rounded-xl p-6">
+                <h2 className="text-lg font-semibold text-gray-700 mb-4">Gráfica de Empleados por Departamento</h2>
                 <div className="h-96">
                     <Bar data={chartData} options={chartOptions} />
                 </div>
             </div>
 
-            {/* 📋 Tabla */}
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg bg-white p-4">
+            <div className="relative overflow-x-auto shadow-lg sm:rounded-xl bg-white p-6">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
@@ -134,9 +128,9 @@ const Departamento: React.FC = () => {
                                     {dep.nombre}
                                 </td>
                                 <td className="px-6 py-4">{dep.cantidad} empleados</td>
-                                <td className="px-6 py-4 flex gap-2">
+                                <td className="px-6 py-4 flex gap-3">
                                     <button
-                                        className="text-blue-500 hover:text-blue-700 flex items-center gap-1"
+                                        className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
                                         title="Editar"
                                     >
                                         <FaEdit /> Editar
@@ -152,8 +146,8 @@ const Departamento: React.FC = () => {
                         ))}
                     </tbody>
                 </table>
-                <div className="text-center text-gray-500 py-4">
-                    <p>By aviles.</p>
+                <div className="text-center text-gray-400 py-4 text-xs">
+                    <p>By Aviles - Dashboard de departamentos</p>
                 </div>
             </div>
         </div>
