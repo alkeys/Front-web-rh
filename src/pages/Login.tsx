@@ -50,6 +50,7 @@ export default function Login() {
                 setLoading(false); // Detener la carga
                 return;
             }
+            console.log("Datos del usuario:", userData);
             setUser(userData); // Guardamos el usuario en el contexto
             if (userData.rol === 'admin') {
             navigate('/Dashboard'); // Redirigimos al Dashboard

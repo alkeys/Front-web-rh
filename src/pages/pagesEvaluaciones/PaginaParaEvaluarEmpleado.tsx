@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useUserContext } from "../../context/UserContext";
 
 const PaginaParaEvaluarEmpleado: React.FC = () => {
     const [selectedDepartment, setSelectedDepartment] = useState("");
     const [selectedEmployee, setSelectedEmployee] = useState("");
     const [evaluator, setEvaluator] = useState("");
+    const { user } = useUserContext();
 
     const departments = ["Recursos Humanos", "Tecnología", "Ventas", "Marketing"];
     const employees: Record<string, string[]> = {

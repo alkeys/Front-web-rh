@@ -60,7 +60,7 @@ const Perfiles: React.FC = () => {
                             </th>
                             <td className="px-6 py-4">{user.email}</td>
                             <td className="px-6 py-4">
-                                {user.cargo?.nombre || 'Administrador'}
+                                {user.rol || 'Administrador'}
                             </td>
                         </tr>
                     ))}
