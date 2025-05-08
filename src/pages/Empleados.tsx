@@ -2,7 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { FaFilter, FaSearch, FaRedo } from 'react-icons/fa';
 
 const Empleados: React.FC = () => {
-    const [usuarios, setUsuarios] = useState([]);
+    interface Empleado {
+        nombre: string;
+        apellido: string;
+        email: string;
+        telefono: string;
+        fechaContratacion: string;
+        departamento?: { nombre: string };
+        cargo?: { nombre: string };
+    }
+
+    const [usuarios, setUsuarios] = useState<Empleado[]>([]);
     const [filtroNombre, setFiltroNombre] = useState('');
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
     const [filtroCargo, setFiltroCargo] = useState('');

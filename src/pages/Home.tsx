@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Baner from '../component/Baner';
 import Footer from '../component/Footer';
 import Boton from '../component/utils/Boton';
@@ -16,7 +16,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 export default function Home() {
-    const [chartData, setChartData] = useState({
+    const [chartData] = useState({
         labels: ['Empleados', 'Departamentos', 'Cargos'],
         datasets: [
             {

@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { FaUserAlt } from 'react-icons/fa';
 
 const Perfiles: React.FC = () => {
-    const [usuarios, setUsuarios] = useState([]);
+    interface Usuario {
+        id: number;
+        username: string;
+        email: string;
+        rol: string;
+    }
+
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const url = import.meta.env.VITE_API_URL_GET_All_USERS;
 
     useEffect(() => {

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useUserContext } from '../../context/UserContext';
 
 const Config: React.FC = () => {
-    const { user, setUser } = useUserContext();
+    const { user } = useUserContext();
     const urlApiUpdateUser = import.meta.env.VITE_API_URL_UPDATE_USER;
     const [formData, setFormData] = useState({
         username: user?.username || '',
@@ -37,15 +37,7 @@ const Config: React.FC = () => {
             });
 
             if (response.ok) {
-                const updatedUser = {
-                    id: user.id,
-                    username: formData.username,
-                    email: formData.email,
-                    password: formData.password,
-                    activo: formData.active,
-                };
-                setUser(updatedUser);
-
+              
                 setAlert({
                     visible: true,
                     message: 'Datos actualizados correctamente',

@@ -43,7 +43,7 @@ export default function AdminPanel() {
         } else {
           console.log('Error al activar usuario');
         }
-      }).catch(error => {
+      }).catch(() => {
         console.log('Error al activar usuario');
       });
     }
@@ -65,7 +65,7 @@ export default function AdminPanel() {
       } else {
         console.log('Error al desactivar usuario');
       }
-    }).catch(error => {
+    }).catch(() => {
       console.log('Error al desactivar usuario');
 
     });
