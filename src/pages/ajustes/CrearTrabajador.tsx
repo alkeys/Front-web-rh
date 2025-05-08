@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const CrearTrabajador: React.FC = () => {
-    const urlCrearEmpleado = import.meta.env.VITE_API_URL_CREATE_EMPLEADO;
+    const urlCrearEmpleado = import.meta.env.VITE_API_URL_SAVE_EMPLEADO;
     const urlDepartamentos = import.meta.env.VITE_API_URL_GET_ALL_DEPARTAMENTOS;
     const urlCargos = import.meta.env.VITE_API_URL_GET_ALL_CARGOS;
 
@@ -11,8 +11,8 @@ const CrearTrabajador: React.FC = () => {
         email: '',
         telefono: '',
         fecha_contratacion: '',
-        departamento_id: '',
-        cargo_id: '',
+        departamento_id: '', // ✅ corregido nombre
+        cargo_id: '',         // ✅ corregido nombre
     });
 
     const [departamentos, setDepartamentos] = useState([]);
@@ -38,30 +38,52 @@ const CrearTrabajador: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+    
+        const queryParams = new URLSearchParams({
+            DepartamentoId: formData.departamento_id,
+            CargoId: formData.cargo_id,
+        }).toString();
+    
         try {
-            console.log('Enviando datos:', formData);
-            const response = await fetch(urlCrearEmpleado, {
+            const response = await fetch(`${urlCrearEmpleado}?${queryParams}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: formData.nombre,
+                    apellido: formData.apellido,
+                    email: formData.email,
+                    telefono: formData.telefono,
+                    fechaContratacion: formData.fecha_contratacion,
+                }),
             });
-
+    
             if (response.ok) {
-                setMensaje('Trabajador creado con éxito.');
+                setMensaje('Trabajador creado correctamente.');
                 setFormData({
-                    nombre: '', apellido: '', email: '', telefono: '',
-                    fecha_contratacion: '', departamento_id: '', cargo_id: ''
+                    nombre: '',
+                    apellido: '',
+                    email: '',
+                    telefono: '',
+                    fecha_contratacion: '',
+                    departamento_id: '',
+                    cargo_id: '',
                 });
             } else {
-                setMensaje('Error al crear trabajador.');
+                const error = await response.text();
+                console.error('Error en la respuesta:', error);
+                setMensaje('Error al crear el trabajador.');
             }
         } catch (error) {
-            console.error(error);
-            setMensaje('Error en el servidor.');
+            console.error('Error en el envío:', error);
+            setMensaje('Error en la conexión.');
         }
-
+    
         setTimeout(() => setMensaje(''), 3000);
     };
+    
+    
 
     return (
         <div className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md space-y-6">
