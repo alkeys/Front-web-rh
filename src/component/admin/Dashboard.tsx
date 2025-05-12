@@ -24,6 +24,7 @@ const Dashboard: React.FC = () => {
 
     const CantidadEmpleados = async () => {
         const response = await fetch(urlapiEmpleadoCantidad);
+        console.log('Response:', response);
         const data = await response.json();
         setCantidad(data);
     };

@@ -13,18 +13,24 @@ const Empleados: React.FC = () => {
     }
 
     const [usuarios, setUsuarios] = useState<Empleado[]>([]);
+    const [totalEmpleados, setTotalEmpleados] = useState(0);
     const [filtroNombre, setFiltroNombre] = useState('');
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
     const [filtroCargo, setFiltroCargo] = useState('');
+    const [pagina, setPagina] = useState(0);
+    const [cantidad, setCantidad] = useState(10);
 
-    const url = import.meta.env.VITE_API_URL_GET_ALL_EMPLEADOS;
+    const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
+    const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
 
     useEffect(() => {
-        cargarDatos();
-    }, []);
+        cargarDatos(pagina, cantidad);
+        cargarTotalEmpleados();
+    }, [pagina, cantidad]);
 
-    const cargarDatos = async () => {
+    const cargarDatos = async (pagina: number, cantidad: number) => {
         try {
+            const url = urlBase.replace('{PAGINA}', pagina.toString()).replace('{cantidad}', cantidad.toString());
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -33,6 +39,19 @@ const Empleados: React.FC = () => {
             setUsuarios(data);
         } catch (error) {
             console.error('Error fetching data:', error);
+        }
+    };
+
+    const cargarTotalEmpleados = async () => {
+        try {
+            const response = await fetch(urlTotal);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const total = await response.json();
+            setTotalEmpleados(total);
+        } catch (error) {
+            console.error('Error fetching total count:', error);
         }
     };
 
@@ -69,21 +88,36 @@ const Empleados: React.FC = () => {
         setFiltroCargo('');
     };
 
+    const siguientePagina = () => {
+        if ((pagina + 1) * cantidad < totalEmpleados) {
+            setPagina(prev => prev + 1);
+        }
+    };
+
+    const paginaAnterior = () => {
+        if (pagina > 0) {
+            setPagina(prev => prev - 1);
+        }
+    };
+
     return (
         <div className="p-6 space-y-6 bg-gradient-to-b from-gray-50 to-white min-h-screen">
-            {/* Tarjeta resumen */}
             <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
                 <div className="bg-white p-6 rounded-xl shadow-lg">
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-lg font-semibold text-gray-800">Total Empleados</h3>
                         <span className="text-blue-500 text-xl">👥</span>
                     </div>
-                    <div className="text-4xl font-bold text-blue-700">{usuarios.length}</div>
-                    <p className="text-sm text-gray-500">Empleados registrados actualmente</p>
+                    <div className="text-4xl font-bold text-blue-700">{totalEmpleados}</div>
+                    <p className="text-sm text-gray-500">Página {pagina + 1} | Mostrando {cantidad} empleados</p>
                 </div>
             </div>
 
-            {/* Filtros */}
+            <div className="flex gap-4">
+                <button onClick={paginaAnterior} className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Anterior</button>
+                <button onClick={siguientePagina} className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Siguiente</button>
+            </div>
+
             <div className="bg-white p-6 rounded-xl shadow-md flex flex-wrap gap-4 justify-between">
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <FaSearch className="text-gray-500" />
@@ -129,7 +163,6 @@ const Empleados: React.FC = () => {
                 </button>
             </div>
 
-            {/* Tabla de empleados */}
             <div className="relative overflow-x-auto shadow-lg sm:rounded-xl bg-white p-6">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50">
