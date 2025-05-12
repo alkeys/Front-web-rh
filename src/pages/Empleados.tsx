@@ -18,7 +18,7 @@ const Empleados: React.FC = () => {
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
     const [filtroCargo, setFiltroCargo] = useState('');
     const [pagina, setPagina] = useState(0);
-    const [cantidad, setCantidad] = useState(10);
+    const [cantidad] = useState(10);
 
     const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
     const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
