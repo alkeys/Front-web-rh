@@ -25,6 +25,7 @@ const Empleados: React.FC = () => {
 
     const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
     const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
+    const urlDelete = import.meta.env.VITE_API_URL_DELETE_EMPLEADO_BY_ID;
     
 
    
@@ -84,6 +85,32 @@ const Empleados: React.FC = () => {
         console.log('Información del empleado almacenada:', empleado);
     };
 
+
+    const BorrarEmpleado = (empleado: Empleado) => {
+        var id = empleado.id;
+        console.log('ID del empleado a borrar:', id);
+        fetch(urlDelete.replace('{id}', id.toString()), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Error al eliminar el empleado');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Empleado eliminado:', data);
+                // Actualizar la lista de empleados después de eliminar
+                alert('Empleado eliminado correctamente');
+                cargarDatos(pagina, cantidad);
+            })
+            .catch((error) => {
+                console.error('Error al eliminar el empleado:', error);
+            });
+    };
 
 
 
@@ -205,7 +232,7 @@ const Empleados: React.FC = () => {
                                             Ver más
                                         </button>
                                         <button 
-                                            onClick={() => alert('borrar: ' + empleado.nombre)}
+                                            onClick={() => BorrarEmpleado(empleado)}
                                             className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300 text-xs ml-2"   
                                             >
                                             Borrar
