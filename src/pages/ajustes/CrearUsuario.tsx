@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const CrearUsuario: React.FC = () => {
+  const urlsave = import.meta.env.VITE_API_URL_SAVE_USER  
   const [formData, setFormData] = useState({
-    id: 0,
+    
     username: "",
     password: "",
     rol: "",
@@ -23,7 +24,7 @@ const CrearUsuario: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post("/rh-api/userapp/save/", formData);
+      await axios.post(urlsave, formData);
       alert("Usuario creado correctamente");
     } catch (error) {
       console.error("Error al crear el usuario:", error);
