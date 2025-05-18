@@ -32,88 +32,91 @@ const CrearUsuario: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded shadow p-6 mt-4">
-      <h2 className="text-xl font-bold mb-4">Crear Usuario</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-            Usuario
-          </label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-        </div>
+    <div className="px-6 py-4">
+      <h2 className="text-2xl font-semibold mb-4">Crear Usuario</h2>
+      
+      <div className="bg-white shadow rounded-lg max-w-md mx-auto p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              Nombre de usuario
+            </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Contraseña
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="rol" className="block text-sm font-medium text-gray-700">
-            Rol
-          </label>
-          <input
-            type="text"
-            id="rol"
-            name="rol"
-            value={formData.rol}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-            Correo Electrónico
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 block w-full border border-gray-300 rounded px-3 py-2"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="rol" className="block text-sm font-medium text-gray-700">
+              Rol
+            </label>
+            <input
+              type="text"
+              id="rol"
+              name="rol"
+              value={formData.rol}
+              onChange={handleChange}
+              className="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
 
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="activo"
-            name="activo"
-            checked={formData.activo}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <label htmlFor="activo" className="text-sm text-gray-700">Activo</label>
-        </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="activo"
+              name="activo"
+              checked={formData.activo}
+              onChange={handleChange}
+              className="mr-2"
+            />
+            <label htmlFor="activo" className="text-sm text-gray-700">Activo</label>
+          </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Guardar Usuario
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+          >
+            Guardar Usuario
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
