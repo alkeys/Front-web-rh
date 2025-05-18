@@ -26,7 +26,6 @@ const Ajustes: React.FC = () => {
         { label: 'Logs', icon: <FaClipboardList /> },
         { label: 'Crear Trabajador', icon: <FaUsers /> },
         { label: 'Crear Departamento', icon: <FaBuilding /> },
-        { label: 'Crear Puesto', icon: <FaSuitcase /> },
         { label: 'Crear Usuario', icon: <FaUserPlus /> },
     ];
 
@@ -42,8 +41,6 @@ const Ajustes: React.FC = () => {
                 return <CrearTrabajador />;
             case 'Crear Departamento':
                 return <CreateDepartamento />;
-            case 'Crear Puesto':
-                return <p>Define nuevos puestos de trabajo.</p>;
             case 'Crear Usuario':
                 return <p>Registra nuevos usuarios en el sistema.</p>;
             default:
