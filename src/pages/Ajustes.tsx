@@ -6,6 +6,7 @@ import Logs from './ajustes/Logs';
 import CreateDepartamento from './ajustes/CreateDepartamento';
 import { FaCogs, FaUserCog, FaClipboardList, FaUserPlus, FaBuilding,  FaUsers } from 'react-icons/fa';
 import CrearTrabajador from './ajustes/CrearTrabajador';
+import CrearUsuario from './ajustes/CrearUsuario';
 
 
 const Ajustes: React.FC = () => {
@@ -42,7 +43,7 @@ const Ajustes: React.FC = () => {
             case 'Crear Departamento':
                 return <CreateDepartamento />;
             case 'Crear Usuario':
-                return <p>Registra nuevos usuarios en el sistema.</p>;
+                return <CrearUsuario />;
             default:
                 return <p>Selecciona una opción para comenzar.</p>;
         }
