@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaFilter, FaSearch, FaRedo } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const Empleados: React.FC = () => {
     interface Empleado {
@@ -22,6 +23,9 @@ const Empleados: React.FC = () => {
     const [filtroCargo, setFiltroCargo] = useState('');
     const [pagina, setPagina] = useState(0);
     const [cantidad] = useState(10);
+    const navigate = useNavigate();
+
+    
 
     const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
     const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
@@ -81,9 +85,10 @@ const Empleados: React.FC = () => {
     ////para el boton de ver mas podes pasarle el id del empleado y hacer un fetch a la api para obtener mas info 
     // o simplemente puedes mostrar la info en un modal o en una nueva pagina
     const verMasInfo = (empleado: Empleado) => {
-
-        console.log('Información del empleado almacenada:', empleado);
+        navigate(`/info-empleado/${empleado.id}`);
     };
+
+
 
 
     const BorrarEmpleado = (empleado: Empleado) => {
