@@ -3,12 +3,15 @@ import { FaFilter, FaSearch, FaRedo } from 'react-icons/fa';
 
 const Empleados: React.FC = () => {
     interface Empleado {
+        id: number;
+        idDepartamento: number;
+        idCargo: number;
         nombre: string;
         apellido: string;
         email: string;
         telefono: string;
         fechaContratacion: string;
-        departamento?: { nombre: string };
+        departamento?: {nombre: string };
         cargo?: { nombre: string };
     }
 
@@ -22,6 +25,9 @@ const Empleados: React.FC = () => {
 
     const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
     const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
+    
+
+   
 
     useEffect(() => {
         cargarDatos(pagina, cantidad);
@@ -69,18 +75,17 @@ const Empleados: React.FC = () => {
 
     const departamentos = Array.from(new Set(usuarios.map((empleado: any) => empleado.departamento?.nombre))).filter(Boolean);
     const cargos = Array.from(new Set(usuarios.map((empleado: any) => empleado.cargo?.nombre))).filter(Boolean);
+   
 
-    const verMasInfo = (empleado: any) => {
-        alert(
-            `Información del empleado:\n\n` +
-            `Nombre: ${empleado.nombre} ${empleado.apellido}\n` +
-            `Email: ${empleado.email}\n` +
-            `Teléfono: ${empleado.telefono}\n` +
-            `Fecha de Contratación: ${empleado.fechaContratacion}\n` +
-            `Departamento: ${empleado.departamento?.nombre || 'N/A'}\n` +
-            `Cargo: ${empleado.cargo?.nombre || 'N/A'}`
-        );
+    ////para el boton de ver mas podes pasarle el id del empleado y hacer un fetch a la api para obtener mas info 
+    // o simplemente puedes mostrar la info en un modal o en una nueva pagina
+    const verMasInfo = (empleado: Empleado) => {
+
+        console.log('Información del empleado almacenada:', empleado);
     };
+
+
+
 
     const limpiarFiltros = () => {
         setFiltroNombre('');
@@ -191,13 +196,20 @@ const Empleados: React.FC = () => {
                                     <td className="px-6 py-4">{empleado.fechaContratacion}</td>
                                     <td className="px-6 py-4">{empleado.departamento?.nombre || 'N/A'}</td>
                                     <td className="px-6 py-4">{empleado.cargo?.nombre || 'N/A'}</td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 flex gap-2">
                                         <button
                                             onClick={() => verMasInfo(empleado)}
                                             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 text-xs"
                                         >
+                                    
                                             Ver más
                                         </button>
+                                        <button 
+                                            onClick={() => alert('borrar: ' + empleado.nombre)}
+                                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300 text-xs ml-2"   
+                                            >
+                                            Borrar
+                                            </button>
                                     </td>
                                 </tr>
                             ))

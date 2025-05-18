@@ -4,7 +4,7 @@ import Config from './ajustes/Config';
 import Perfiles from './ajustes/Perfiles';
 import Logs from './ajustes/Logs';
 import CreateDepartamento from './ajustes/CreateDepartamento';
-import { FaCogs, FaUserCog, FaClipboardList, FaUserPlus, FaBuilding, FaSuitcase, FaUsers } from 'react-icons/fa';
+import { FaCogs, FaUserCog, FaClipboardList, FaUserPlus, FaBuilding,  FaUsers } from 'react-icons/fa';
 import CrearTrabajador from './ajustes/CrearTrabajador';
 
 
