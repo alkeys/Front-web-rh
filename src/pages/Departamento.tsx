@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrashAlt, FaBuilding, FaSearch } from 'react-icons/fa';
+import { FaEdit, FaBuilding, FaSearch } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import 'chart.js/auto';
 
