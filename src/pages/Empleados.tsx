@@ -12,7 +12,7 @@ const Empleados: React.FC = () => {
         email: string;
         telefono: string;
         fechaContratacion: string;
-        departamento?: {nombre: string };
+        departamento?: { nombre: string };
         cargo?: { nombre: string };
     }
 
@@ -22,30 +22,24 @@ const Empleados: React.FC = () => {
     const [filtroDepartamento, setFiltroDepartamento] = useState('');
     const [filtroCargo, setFiltroCargo] = useState('');
     const [pagina, setPagina] = useState(0);
-    const [cantidad] = useState(10);
+    const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState<Empleado | null>(null);
+    const cantidad = 10;
     const navigate = useNavigate();
-
-    
 
     const urlBase = import.meta.env.VITE_API_URL_GET_EMPLEADO_PAGINATED;
     const urlTotal = import.meta.env.VITE_API_URL_COUNT_EMPLEADOS;
     const urlDelete = import.meta.env.VITE_API_URL_DELETE_EMPLEADO_BY_ID;
-    
-
-   
 
     useEffect(() => {
         cargarDatos(pagina, cantidad);
         cargarTotalEmpleados();
-    }, [pagina, cantidad]);
+    }, [pagina]);
 
     const cargarDatos = async (pagina: number, cantidad: number) => {
         try {
             const url = urlBase.replace('{PAGINA}', pagina.toString()).replace('{cantidad}', cantidad.toString());
             const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
             setUsuarios(data);
         } catch (error) {
@@ -56,9 +50,7 @@ const Empleados: React.FC = () => {
     const cargarTotalEmpleados = async () => {
         try {
             const response = await fetch(urlTotal);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const total = await response.json();
             setTotalEmpleados(total);
         } catch (error) {
@@ -78,46 +70,33 @@ const Empleados: React.FC = () => {
         );
     });
 
-    const departamentos = Array.from(new Set(usuarios.map((empleado: any) => empleado.departamento?.nombre))).filter(Boolean);
-    const cargos = Array.from(new Set(usuarios.map((empleado: any) => empleado.cargo?.nombre))).filter(Boolean);
-   
+    const departamentos = Array.from(new Set(usuarios.map((e) => e.departamento?.nombre))).filter(Boolean);
+    const cargos = Array.from(new Set(usuarios.map((e) => e.cargo?.nombre))).filter(Boolean);
 
-    ////para el boton de ver mas podes pasarle el id del empleado y hacer un fetch a la api para obtener mas info 
-    // o simplemente puedes mostrar la info en un modal o en una nueva pagina
     const verMasInfo = (empleado: Empleado) => {
-        navigate(`/info-empleado/${empleado.id}`);
+        setEmpleadoSeleccionado(empleado);
     };
 
-
-
+    const cerrarInfo = () => {
+        setEmpleadoSeleccionado(null);
+    };
 
     const BorrarEmpleado = (empleado: Empleado) => {
-        var id = empleado.id;
-        console.log('ID del empleado a borrar:', id);
-        fetch(urlDelete.replace('{id}', id.toString()), {
+        if (!window.confirm(`¿Seguro que deseas borrar a ${empleado.nombre} ${empleado.apellido}?`)) return;
+        const url = urlDelete.replace('{id}', empleado.id.toString());
+        fetch(url, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
         })
             .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Error al eliminar el empleado');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                console.log('Empleado eliminado:', data);
-                // Actualizar la lista de empleados después de eliminar
-                alert('Empleado eliminado correctamente');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 cargarDatos(pagina, cantidad);
+                cargarTotalEmpleados();
             })
             .catch((error) => {
-                console.error('Error al eliminar el empleado:', error);
+                console.error('Error al borrar el empleado:', error);
             });
     };
-
-
 
     const limpiarFiltros = () => {
         setFiltroNombre('');
@@ -126,15 +105,11 @@ const Empleados: React.FC = () => {
     };
 
     const siguientePagina = () => {
-        if ((pagina + 1) * cantidad < totalEmpleados) {
-            setPagina(prev => prev + 1);
-        }
+        if ((pagina + 1) * cantidad < totalEmpleados) setPagina(pagina + 1);
     };
 
     const paginaAnterior = () => {
-        if (pagina > 0) {
-            setPagina(prev => prev - 1);
-        }
+        if (pagina > 0) setPagina(pagina - 1);
     };
 
     return (
@@ -174,8 +149,8 @@ const Empleados: React.FC = () => {
                         className="border rounded-lg px-4 py-2 w-full sm:w-64 text-sm focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">Seleccionar Departamento</option>
-                        {departamentos.map((departamento, index) => (
-                            <option key={index} value={departamento}>{departamento}</option>
+                        {departamentos.map((d, i) => (
+                            <option key={i} value={d}>{d}</option>
                         ))}
                     </select>
                 </div>
@@ -187,8 +162,8 @@ const Empleados: React.FC = () => {
                         className="border rounded-lg px-4 py-2 w-full sm:w-64 text-sm focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="">Seleccionar Cargo</option>
-                        {cargos.map((cargo, index) => (
-                            <option key={index} value={cargo}>{cargo}</option>
+                        {cargos.map((c, i) => (
+                            <option key={i} value={c}>{c}</option>
                         ))}
                     </select>
                 </div>
@@ -216,45 +191,56 @@ const Empleados: React.FC = () => {
                     </thead>
                     <tbody>
                         {empleadosFiltrados.length > 0 ? (
-                            empleadosFiltrados.map((empleado, index) => (
-                                <tr
-                                    key={index}
-                                    className="odd:bg-white even:bg-gray-50 border-b text-gray-900 hover:bg-blue-50 transition-colors duration-200"
-                                >
-                                    <th className="px-6 py-4 font-medium whitespace-nowrap">{empleado.nombre}</th>
-                                    <td className="px-6 py-4">{empleado.apellido}</td>
-                                    <td className="px-6 py-4">{empleado.email}</td>
-                                    <td className="px-6 py-4">{empleado.telefono}</td>
-                                    <td className="px-6 py-4">{empleado.fechaContratacion}</td>
-                                    <td className="px-6 py-4">{empleado.departamento?.nombre || 'N/A'}</td>
-                                    <td className="px-6 py-4">{empleado.cargo?.nombre || 'N/A'}</td>
+                            empleadosFiltrados.map((e, i) => (
+                                <tr key={i} className="odd:bg-white even:bg-gray-50 border-b text-gray-900 hover:bg-blue-50 transition-colors duration-200">
+                                    <td className="px-6 py-4 font-medium whitespace-nowrap">{e.nombre}</td>
+                                    <td className="px-6 py-4">{e.apellido}</td>
+                                    <td className="px-6 py-4">{e.email}</td>
+                                    <td className="px-6 py-4">{e.telefono}</td>
+                                    <td className="px-6 py-4">{e.fechaContratacion}</td>
+                                    <td className="px-6 py-4">{e.departamento?.nombre || 'N/A'}</td>
+                                    <td className="px-6 py-4">{e.cargo?.nombre || 'N/A'}</td>
                                     <td className="px-6 py-4 flex gap-2">
-                                        <button
-                                            onClick={() => verMasInfo(empleado)}
-                                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-300 text-xs"
-                                        >
-                                    
-                                            Ver más
-                                        </button>
-                                        <button 
-                                            onClick={() => BorrarEmpleado(empleado)}
-                                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors duration-300 text-xs ml-2"   
-                                            >
-                                            Borrar
-                                            </button>
+                                        <button onClick={() => verMasInfo(e)} className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-xs">Ver más</button>
+                                        <button onClick={() => BorrarEmpleado(e)} className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 text-xs">Borrar</button>
+                                       <button onClick={() => navigate(`/Dashboard/empleados/${e.id}`)} className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 text-xs">Editar</button>
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={8} className="text-center text-gray-500 py-4">
-                                    No se encontraron empleados con los filtros seleccionados.
-                                </td>
+                                <td colSpan={8} className="text-center text-gray-500 py-4">No se encontraron empleados con los filtros seleccionados.</td>
                             </tr>
                         )}
                     </tbody>
                 </table>
             </div>
+
+            {empleadoSeleccionado && (
+                <div className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-lg relative">
+                        <button onClick={cerrarInfo} className="absolute top-2 right-4 text-gray-500 hover:text-red-600 text-xl">&times;</button>
+                        <h2 className="text-2xl font-bold text-center text-green-700 mb-4">👤 Detalles del Empleado</h2>
+                        <ul className="space-y-2 text-sm text-gray-700">
+                            <li><strong>Nombre:</strong> {empleadoSeleccionado.nombre}</li>
+                            <li><strong>Apellido:</strong> {empleadoSeleccionado.apellido}</li>
+                            <li><strong>Email:</strong> {empleadoSeleccionado.email}</li>
+                            <li><strong>Teléfono:</strong> {empleadoSeleccionado.telefono}</li>
+                            <li><strong>Fecha de Contratación:</strong> {empleadoSeleccionado.fechaContratacion}</li>
+                            <li><strong>Departamento:</strong> {empleadoSeleccionado.departamento?.nombre || 'N/A'}</li>
+                            <li><strong>Cargo:</strong> {empleadoSeleccionado.cargo?.nombre || 'N/A'}</li>
+                        </ul>
+                        <div className="mt-6 text-right">
+                            <button
+                                onClick={cerrarInfo}
+                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+                            >
+                                Cerrar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

@@ -135,12 +135,6 @@ const Departamento: React.FC = () => {
                                     >
                                         <FaEdit /> Editar
                                     </button>
-                                    <button
-                                        className="text-red-500 hover:text-red-700 flex items-center gap-1"
-                                        title="Eliminar"
-                                    >
-                                        <FaTrashAlt /> Eliminar
-                                    </button>
                                 </td>
                             </tr>
                         ))}

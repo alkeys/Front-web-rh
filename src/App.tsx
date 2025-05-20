@@ -16,7 +16,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/Dashboard" element={<AdminPanel />} />
           <Route path="/Evaluaciones" element={<PaginaParaEvaluarEmpleado />} />
-          <Route path="/info-empleado/:id" element={<InfoEmpleado />} /> {/* <- línea agregada */}
+          <Route path="/Dashboard/empleados/:id" element={<InfoEmpleado />} />
         </Routes>
       </Router>
     </UserProvider>
