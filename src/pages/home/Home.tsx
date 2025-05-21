@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Baner from '../component/Baner';
-import Footer from '../component/Footer';
-import Boton from '../component/utils/Boton';
+import Baner from '../../component/Baner';
+import Footer from '../../component/Footer';
+import Boton from '../../component/utils/Boton';
 import { FaUsers, FaChartLine, FaChalkboardTeacher } from 'react-icons/fa';
 import { Bar } from 'react-chartjs-2';
 import {

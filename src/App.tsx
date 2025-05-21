@@ -1,7 +1,7 @@
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './pages/Home';
-import Login from './pages/Login';
+import Home from './pages/home/Home';
+import Login from './pages/home/Login';
 import { UserProvider } from './context/UserContext';
 import AdminPanel from './pages/admin/AdminPanel';
 import PaginaParaEvaluarEmpleado from './pages/pagesEvaluaciones/PaginaParaEvaluarEmpleado';
