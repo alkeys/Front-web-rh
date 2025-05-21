@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useUserContext } from '../context/UserContext';
-import Config from './ajustes/Config';
-import Perfiles from './ajustes/Perfiles';
-import Logs from './ajustes/Logs';
-import CreateDepartamento from './ajustes/CreateDepartamento';
+import { useUserContext } from '../../context/UserContext';
+import Config from '../ajustes/Config';
+import Perfiles from '../ajustes/Perfiles';
+import Logs from '../ajustes/Logs';
+import CreateDepartamento from '../ajustes/CreateDepartamento';
 import { FaCogs, FaUserCog, FaClipboardList, FaUserPlus, FaBuilding,  FaUsers } from 'react-icons/fa';
-import CrearTrabajador from './ajustes/CrearTrabajador';
-import CrearUsuario from './ajustes/CrearUsuario';
+import CrearTrabajador from '../ajustes/CrearTrabajador';
+import CrearUsuario from '../ajustes/CrearUsuario';
 
 
 const Ajustes: React.FC = () => {

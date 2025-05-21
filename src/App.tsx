@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import { UserProvider } from './context/UserContext';
-import AdminPanel from './pages/AdminPanel';
+import AdminPanel from './pages/admin/AdminPanel';
 import PaginaParaEvaluarEmpleado from './pages/pagesEvaluaciones/PaginaParaEvaluarEmpleado';
 import InfoEmpleado from './pages/empleados/infoempleados';
 

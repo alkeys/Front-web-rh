@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUserContext } from '../context/UserContext';
-import Dashboard from '../component/admin/Dashboard';
+import { useUserContext } from '../../context/UserContext';
+import Dashboard from '../../component/admin/Dashboard';
 import Empleados from './Empleados';
 import Departamento from './Departamento';
 import Ajustes from './Ajustes';
@@ -10,7 +10,7 @@ import Evaluaciones from './Evaluaciones';
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState('dashboard')
-  const { user } = useUserContext();
+  const { user } = useUserContext(); // Obteniendo el usuario actual para el nombre del evaluador
   const urlapiEstado = import.meta.env.VITE_API_URL_ESTADO_USER
 
 
