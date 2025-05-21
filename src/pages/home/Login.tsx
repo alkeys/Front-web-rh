@@ -44,8 +44,17 @@ export default function Login() {
             }
 
             setUser(userData);
-            if (userData.rol === 'admin') navigate('/Dashboard');
-            else if (userData.rol === 'evaluador') navigate('/Evaluaciones');
+            console.log(userData.rol)
+            if (userData.rol === 'EmpleadoRH') {
+                navigate('/Recursos_Humanos');
+            }
+            if (userData.rol === 'Administrador') {
+                navigate('/Dashboard');
+            } else if (userData.rol === 'Evaluador') {
+                navigate('/Evaluaciones');
+            } else {
+                setError('Rol no reconocido.');
+            }
 
         } catch (err) {
             setError('Error de conexión. Intente más tarde.');

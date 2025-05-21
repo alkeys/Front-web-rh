@@ -6,6 +6,7 @@ import { UserProvider } from './context/UserContext';
 import AdminPanel from './pages/admin/AdminPanel';
 import PaginaParaEvaluarEmpleado from './pages/pagesEvaluaciones/PaginaParaEvaluarEmpleado';
 import InfoEmpleado from './pages/empleados/infoempleados';
+import RhPanel from './pages/EvaluacionPanel/RhPanel';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Dashboard" element={<AdminPanel />} />
           <Route path="/Evaluaciones" element={<PaginaParaEvaluarEmpleado />} />
           <Route path="/Dashboard/empleados/:id" element={<InfoEmpleado />} />
+          <Route path='/Recursos_Humanos' element={<RhPanel />} />
         </Routes>
       </Router>
     </UserProvider>

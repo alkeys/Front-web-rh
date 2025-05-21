@@ -152,7 +152,7 @@ export default function AdminPanel() {
     </header>
 
     {/* Main Content */}
-    <main className="flex-grow container mx-auto my-8 p-4">
+    <main className="flex-grow my-8 p-4">
         {renderContent()}
     </main>
 
