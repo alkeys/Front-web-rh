@@ -12,7 +12,6 @@ import {
   RefreshCw,
   BarChart,
   ArrowUpRight,
-  PlusCircle,
   Filter,
   ChevronDown,
   ArrowDownAZ,

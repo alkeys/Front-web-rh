@@ -64,6 +64,9 @@ const InfoEmpleado: React.FC = () => {
   useEffect(() => {
     if (!id) return
     setIsLoading(true)
+    if(isLoading){
+
+    }
 
     Promise.all([
       fetch(API_GET.replace("{id}", id)).then((res) => res.json()),

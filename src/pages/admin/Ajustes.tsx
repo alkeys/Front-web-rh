@@ -16,7 +16,6 @@ import {
   Shield,
   Home,
   Search,
-  LogOut,
 } from "lucide-react"
 
 // Importación de componentes
