@@ -4,9 +4,12 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Bar } from "react-chartjs-2"
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title } from "chart.js"
-import { Users, TrendingUp, BookOpen, ArrowRight, CheckCircle, Mail, Phone, MapPin } from "lucide-react"
+import { Users, TrendingUp, BookOpen, CheckCircle, Mail, Phone, MapPin } from "lucide-react"
 import Baner from "../../component/Baner"
 import Footer from "../../component/Footer"
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react"; // O tu fuente de íconos
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend, Title)
 
@@ -222,15 +225,18 @@ export default function Home() {
               Contacto
             </a>
           </nav>
-          <a
-            href="/login"
-            className={`inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
-              isScrolled ? "bg-green-600 text-white hover:bg-green-700" : "bg-white text-green-700 hover:bg-green-50"
-            }`}
-          >
-            Iniciar Sesión
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </a>
+          <Link
+  to="/login"
+  className={`inline-flex items-center px-4 py-2 rounded-lg font-medium transition-colors ${
+    isScrolled
+      ? "bg-green-600 text-white hover:bg-green-700"
+      : "bg-white text-green-700 hover:bg-green-50"
+  }`}
+>
+  Iniciar Sesión
+  <ArrowRight className="ml-2 h-4 w-4" />
+</Link>
+
         </div>
       </header>
 
