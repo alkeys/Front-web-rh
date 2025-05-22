@@ -1,15 +1,13 @@
-"use client"
 
-import { useUserContext } from "../../context/UserContext"
 import { motion } from "framer-motion"
-import { Sparkles, User } from "lucide-react"
+import { Sparkles} from "lucide-react"
 
 interface HolaProps {
   nombre: string
 }
 
 export default function Hola({ nombre }: HolaProps) {
-  const { user } = useUserContext() // Obteniendo el usuario actual para el nombre del evaluador
+
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-purple-50 to-blue-50 flex flex-col">

@@ -19,7 +19,6 @@ import {
   Phone,
   Briefcase,
   Building,
-  User,
   AlertTriangle,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
