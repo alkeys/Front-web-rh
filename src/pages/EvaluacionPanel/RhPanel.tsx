@@ -5,6 +5,9 @@ import Empleados from '../admin/Empleados';
 import Evaluaciones from '../admin/Evaluaciones';
 import Hola from './hola';
 import CrearTrabajador from '../ajustes/CrearTrabajador';
+import CrearEvaluacion from './EvaluacionCrear';
+import CrearPregunta from './CrearPregunta';
+import EditarEvaluacionYPreguntas from './EditarEvaluacionYPreguntas';
 
 export default function RhPanel() {
   const [activeTab, setActiveTab] = useState('Welcome') // <- Página de bienvenida por defecto
@@ -45,6 +48,12 @@ export default function RhPanel() {
         return <Empleados />
       case 'newEmpleado':
         return <CrearTrabajador></CrearTrabajador>
+        case  'newEvaluacion':
+          return <CrearEvaluacion></CrearEvaluacion>
+        case 'NewPregutas':
+          return <CrearPregunta></CrearPregunta>
+        case 'EditarEvaluacionAndPreguntas':
+          return <EditarEvaluacionYPreguntas></EditarEvaluacionYPreguntas>
       default:
         return <Hola nombre={user?.username || ''} />
     }
@@ -84,7 +93,27 @@ export default function RhPanel() {
                 Nuevo Empleado
               </button>
 
+              
+              <button
+                className={`px-4 py-2 rounded-md ${activeTab === 'evaluaciones' ? 'bg-green-600' : 'hover:bg-green-600'}`}
+                onClick={() => setActiveTab('newEvaluacion')}
+              >
+                Nueva Evaluacion
+              </button>
 
+              <button
+                className={`px-4 py-2 rounded-md ${activeTab === 'NewPregutas' ? 'bg-green-600' : 'hover:bg-green-600'}`}
+                onClick={() => setActiveTab('NewPregutas')}
+              >
+                Nueva Pregunta
+              </button>
+
+              <button
+                className={`px-4 py-2 rounded-md ${activeTab === 'EditarEvaluacionAndPreguntas' ? 'bg-green-600' : 'hover:bg-green-600'}`}
+                onClick={() => setActiveTab('EditarEvaluacionAndPreguntas')}
+              >
+                Editar Evaluacion
+              </button>
               <button
                 className="px-4 py-2 rounded-md bg-red-600 hover:bg-red-700"
                 onClick={cerrarSeccion}
