@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { User, Building, Briefcase, Mail, Phone, Calendar, Save, ArrowLeft, CheckCircle2, AlertTriangle, UserCog, Clock, DollarSign, Info } from 'lucide-react'
+import { useParams, useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
 
 interface Empleado {
   id: number
@@ -16,523 +16,300 @@ interface Empleado {
   cargo: { id: number; nombre: string; salarioBase: number }
 }
 
-interface Departamento {
-  id: number
-  nombre: string
-}
-
-interface Cargo {
-  id: number
-  nombre: string
-  salarioBase: number
-}
-
 const InfoEmpleado: React.FC = () => {
-  // En un entorno real, usaríamos useParams de react-router-dom
-  // Para este ejemplo, simulamos obtener el ID de la URL
-  const id = "1" // Simulado para el ejemplo
-  // const navigate = useNavigate(); // Simulado para el ejemplo
-  const navigate = (path: string) => console.log(`Navegando a: ${path}`)
-
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [empleado, setEmpleado] = useState<Empleado | null>(null)
-  const [departamentos, setDepartamentos] = useState<Departamento[]>([])
-  const [cargos, setCargos] = useState<Cargo[]>([])
+  const [departamentos, setDepartamentos] = useState<any[]>([])
+  const [cargos, setCargos] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
-  const [formChanged, setFormChanged] = useState(false)
-  const [errors, setErrors] = useState<Record<string, string>>({})
 
-  // Simulamos las variables de entorno para el ejemplo
-  const API_GET = "/api/empleados/{id}"
-  const API_UPDATE = "/api/empleados/{id}/departamento/{idDepartamento}/cargo/{idCargo}"
-  const urlDepartamentos = "/api/departamentos"
-  const urlCargos = "/api/cargos"
+  const API_GET = import.meta.env.VITE_API_URL_GET_EMPLEADO_BY_ID
+  const API_UPDATE = import.meta.env.VITE_API_URL_UPDATE_EMPLEADO
+  const API_GET_ALL_DEPARTAMENTOS = import.meta.env.VITE_API_URL_GET_ALL_DEPARTAMENTOS
+  const API_GET_ALL_CARGOS = import.meta.env.VITE_API_URL_GET_ALL_CARGOS
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      try {
-        // En un entorno real, estas serían peticiones fetch reales
-        // Simulamos datos para el ejemplo
-        const depData: Departamento[] = [
-          { id: 1, nombre: "Recursos Humanos" },
-          { id: 2, nombre: "Tecnología" },
-          { id: 3, nombre: "Finanzas" },
-          { id: 4, nombre: "Marketing" },
-        ]
-        setDepartamentos(depData)
+    setIsLoading(true)
+    if (id) {
+      fetch(API_GET.replace("{id}", id))
+        .then((res) => res.json())
+        .then((data) => {
+          setEmpleado(data)
+          setIsLoading(false)
+        })
+        .catch((err) => {
+          console.error("Error al obtener el empleado:", err)
+          setIsLoading(false)
+        })
 
-        const cargoData: Cargo[] = [
-          { id: 1, nombre: "Gerente", salarioBase: 5000 },
-          { id: 2, nombre: "Analista", salarioBase: 3000 },
-          { id: 3, nombre: "Asistente", salarioBase: 2000 },
-          { id: 4, nombre: "Desarrollador", salarioBase: 4000 },
-        ]
-        setCargos(cargoData)
+      fetch(API_GET_ALL_DEPARTAMENTOS)
+        .then((res) => res.json())
+        .then(setDepartamentos)
+        .catch((err) => console.error("Error al obtener los departamentos:", err))
 
-        if (id) {
-          // Simulamos datos del empleado
-          const empleadoData: Empleado = {
-            id: 1,
-            nombre: "Juan",
-            apellido: "Pérez",
-            email: "juan.perez@empresa.com",
-            telefono: "123-456-7890",
-            fechaContratacion: "2022-05-15",
-            departamento: { id: 2, nombre: "Tecnología" },
-            cargo: { id: 4, nombre: "Desarrollador", salarioBase: 4000 },
-          }
-          setEmpleado(empleadoData)
-        }
-      } catch (error) {
-        console.error("Error al cargar datos:", error)
-        showNotification("error", "Error al cargar los datos del empleado")
-      } finally {
-        setIsLoading(false)
-      }
+      fetch(API_GET_ALL_CARGOS)
+        .then((res) => res.json())
+        .then(setCargos)
+        .catch((err) => console.error("Error al obtener los cargos:", err))
     }
-
-    fetchData()
   }, [id])
 
-  const showNotification = (type: "success" | "error", message: string) => {
-    setNotification({ type, message })
-    setTimeout(() => setNotification(null), 3000)
-  }
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-
-    if (!empleado?.nombre.trim()) newErrors.nombre = "El nombre es obligatorio"
-    if (!empleado?.apellido.trim()) newErrors.apellido = "El apellido es obligatorio"
-    if (!empleado?.email.trim()) newErrors.email = "El email es obligatorio"
-    if (empleado?.email && !/\S+@\S+\.\S+/.test(empleado.email))
-      newErrors.email = "El formato del email no es válido"
-    if (!empleado?.telefono.trim()) newErrors.telefono = "El teléfono es obligatorio"
-    if (!empleado?.fechaContratacion) newErrors.fechaContratacion = "La fecha de contratación es obligatoria"
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (empleado) {
-      const { name, value } = e.target
-      if (name === "departamento") {
-        const selectedDep = departamentos.find((d) => d.id === Number(value))
-        if (selectedDep) setEmpleado({ ...empleado, departamento: selectedDep })
-      } else if (name === "cargo") {
-        const selectedCargo = cargos.find((c) => c.id === Number(value))
-        if (selectedCargo) setEmpleado({ ...empleado, cargo: selectedCargo })
-      } else {
-        setEmpleado({ ...empleado, [name]: value })
-      }
-      setFormChanged(true)
+    const { name, value } = e.target
+    if (!empleado) return
+
+    if (name === "departamento") {
+      const dep = departamentos.find((d) => d.id === Number.parseInt(value))
+      setEmpleado({ ...empleado, departamento: dep })
+    } else if (name === "cargo") {
+      const car = cargos.find((c) => c.id === Number.parseInt(value))
+      setEmpleado({ ...empleado, cargo: car })
+    } else {
+      setEmpleado({ ...empleado, [name]: value })
     }
   }
 
-  const guardarCambios = async () => {
-    if (!empleado || !validateForm()) return
+  const guardarCambios = () => {
+    if (!empleado) return
+    if (!empleado.nombre || !empleado.apellido || !empleado.email || !empleado.telefono) {
+      alert("❌ Todos los campos son obligatorios")
+      return
+    }
 
     setIsSaving(true)
-    try {
-      // En un entorno real, esta sería una petición fetch real
-      // Simulamos una respuesta exitosa después de un breve retraso
-      await new Promise((resolve) => setTimeout(resolve, 800))
-
-      showNotification("success", "Empleado actualizado correctamente")
-      setFormChanged(false)
-      // navigate('/Dashboard'); // En un entorno real
-    } catch (error) {
-      console.error("Error al guardar:", error)
-      showNotification("error", "No se pudo actualizar el empleado")
-    } finally {
-      setIsSaving(false)
+    const datosEnviar = {
+      nombre: empleado.nombre,
+      apellido: empleado.apellido,
+      email: empleado.email,
+      telefono: empleado.telefono,
+      fechaContratacion: empleado.fechaContratacion,
     }
+
+    const url = API_UPDATE.replace("{id}", empleado.id.toString())
+      .replace("{idDepartamento}", empleado.departamento.id.toString())
+      .replace("{idCargo}", empleado.cargo.id.toString())
+
+    fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datosEnviar),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        alert("✅ Cambios guardados exitosamente")
+        navigate("/Dashboard")
+      })
+      .catch((err) => {
+        console.error("Error al guardar el empleado:", err)
+        alert("❌ Error al guardar los cambios")
+      })
+      .finally(() => {
+        setIsSaving(false)
+      })
   }
 
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString)
-      return new Intl.DateTimeFormat("es", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }).format(date)
-    } catch (e) {
-      return dateString
-    }
-  }
-
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-gray-50 flex items-center justify-center"
+      >
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500 mx-auto"></div>
-          <p className="mt-4 text-sm text-gray-600">Cargando datos del empleado...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Cargando datos del empleado...</p>
         </div>
-      </div>
+      </motion.div>
     )
+  }
 
-  if (!empleado)
+  if (!empleado) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-8 text-center max-w-md">
-          <AlertTriangle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="min-h-screen bg-gray-50 flex items-center justify-center p-4"
+      >
+        <div className="bg-white rounded-lg shadow-md p-8 text-center max-w-md">
+          <div className="text-amber-500 text-5xl mb-4">⚠️</div>
           <h2 className="text-xl font-bold text-gray-900 mb-2">Empleado no encontrado</h2>
           <p className="text-gray-600 mb-6">No se pudo encontrar la información del empleado solicitado.</p>
           <button
-            onClick={() => navigate("/Dashboard")}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700"
+            onClick={() => navigate("/empleados")}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Volver al panel
+            ⬅️ Volver al listado
           </button>
         </div>
-      </div>
+      </motion.div>
     )
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-gray-50 to-green-50 py-8 px-4"
+    >
+      <div className="max-w-2xl mx-auto">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.5 }}
+          className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-6 py-4">
+            <div className="flex justify-between items-center">
               <button
-                onClick={() => navigate("/Dashboard")}
-                className="mr-4 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                onClick={() => navigate("/empleados")}
+                className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
               >
-                <ArrowLeft className="h-5 w-5 text-gray-500" />
+                ⬅️
               </button>
-              <h1 className="text-xl font-bold text-gray-900 flex items-center">
-                <UserCog className="mr-2 h-5 w-5 text-teal-600" />
-                Información del Empleado
-              </h1>
-            </div>
-
-            <div>
-              <button
-                onClick={guardarCambios}
-                disabled={isSaving || !formChanged}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    Guardando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Guardar Cambios
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
-          {/* Información general */}
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex flex-col sm:flex-row sm:items-center mb-6">
-              <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-4">
-                <div className="w-20 h-20 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-2xl font-bold">
-                  {empleado.nombre.charAt(0)}
-                  {empleado.apellido.charAt(0)}
-                </div>
-              </div>
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {empleado.nombre} {empleado.apellido}
-                </h2>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
-                    <Building className="mr-1 h-3 w-3" />
-                    {empleado.departamento.nombre}
-                  </span>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    <Briefcase className="mr-1 h-3 w-3" />
-                    {empleado.cargo.nombre}
-                  </span>
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                    <Clock className="mr-1 h-3 w-3" />
-                    Contratado: {formatDate(empleado.fechaContratacion)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Información personal */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                  <User className="mr-2 h-4 w-4 text-teal-600" />
-                  Información personal
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
-                      Nombre
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="nombre"
-                        name="nombre"
-                        type="text"
-                        value={empleado.nombre}
-                        onChange={handleInputChange}
-                        className={`block w-full pl-3 pr-3 py-2 border ${
-                          errors.nombre ? "border-red-300 ring-1 ring-red-300" : "border-gray-200"
-                        } rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
-                      />
-                      {errors.nombre && <p className="mt-1 text-xs text-red-600">{errors.nombre}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="apellido" className="block text-sm font-medium text-gray-700 mb-1">
-                      Apellido
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="apellido"
-                        name="apellido"
-                        type="text"
-                        value={empleado.apellido}
-                        onChange={handleInputChange}
-                        className={`block w-full pl-3 pr-3 py-2 border ${
-                          errors.apellido ? "border-red-300 ring-1 ring-red-300" : "border-gray-200"
-                        } rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
-                      />
-                      {errors.apellido && <p className="mt-1 text-xs text-red-600">{errors.apellido}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Correo electrónico
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Mail className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={empleado.email}
-                        onChange={handleInputChange}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          errors.email ? "border-red-300 ring-1 ring-red-300" : "border-gray-200"
-                        } rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
-                      />
-                      {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email}</p>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
-                      Teléfono
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Phone className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <input
-                        id="telefono"
-                        name="telefono"
-                        type="text"
-                        value={empleado.telefono}
-                        onChange={handleInputChange}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          errors.telefono ? "border-red-300 ring-1 ring-red-300" : "border-gray-200"
-                        } rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
-                      />
-                      {errors.telefono && <p className="mt-1 text-xs text-red-600">{errors.telefono}</p>}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Información laboral */}
-              <div>
-                <h3 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
-                  <Briefcase className="mr-2 h-4 w-4 text-teal-600" />
-                  Información laboral
-                </h3>
-
-                <div className="space-y-4">
-                  <div>
-                    <label htmlFor="fechaContratacion" className="block text-sm font-medium text-gray-700 mb-1">
-                      Fecha de contratación
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Calendar className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <input
-                        id="fechaContratacion"
-                        name="fechaContratacion"
-                        type="date"
-                        value={empleado.fechaContratacion}
-                        onChange={handleInputChange}
-                        className={`block w-full pl-10 pr-3 py-2 border ${
-                          errors.fechaContratacion ? "border-red-300 ring-1 ring-red-300" : "border-gray-200"
-                        } rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500`}
-                      />
-                      {errors.fechaContratacion && (
-                        <p className="mt-1 text-xs text-red-600">{errors.fechaContratacion}</p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="departamento" className="block text-sm font-medium text-gray-700 mb-1">
-                      Departamento
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Building className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <select
-                        id="departamento"
-                        name="departamento"
-                        value={empleado.departamento.id}
-                        onChange={handleInputChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                      >
-                        {departamentos.map((dep) => (
-                          <option key={dep.id} value={dep.id}>
-                            {dep.nombre}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label htmlFor="cargo" className="block text-sm font-medium text-gray-700 mb-1">
-                      Cargo
-                    </label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Briefcase className="h-4 w-4 text-gray-400" />
-                      </div>
-                      <select
-                        id="cargo"
-                        name="cargo"
-                        value={empleado.cargo.id}
-                        onChange={handleInputChange}
-                        className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-md shadow-sm text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
-                      >
-                        {cargos.map((cargo) => (
-                          <option key={cargo.id} value={cargo.id}>
-                            {cargo.nombre}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="bg-gray-50 border border-gray-100 rounded-lg p-3">
-                    <div className="flex items-center">
-                      <DollarSign className="h-5 w-5 text-green-600 mr-2" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">Salario base</p>
-                        <p className="text-lg font-bold text-green-700">
-                          ${empleado.cargo.salarioBase.toLocaleString("es")}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <h1 className="text-xl font-bold text-white">✏️ Editar Empleado</h1>
+              <div className="w-8"></div> {/* Spacer para centrar el título */}
             </div>
           </div>
 
-          {/* Acciones */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between gap-4">
-            <button
-              onClick={() => navigate("/Dashboard")}
-              className="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500"
+          {/* Contenido */}
+          <div className="p-6">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+              className="flex items-center justify-center mb-6"
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Cancelar y volver
-            </button>
-
-            <div className="flex gap-4">
-              <button
-                onClick={guardarCambios}
-                disabled={isSaving || !formChanged}
-                className="flex-1 inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                    Guardando...
-                  </>
-                ) : (
-                  <>
-                    <Save className="mr-2 h-4 w-4" />
-                    Guardar Cambios
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Información adicional */}
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-            <div className="flex items-start">
-              <Info className="h-5 w-5 text-teal-600 mr-3 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="text-xs text-gray-600">
-                  Los cambios realizados en esta página actualizarán la información del empleado en el sistema. Asegúrate
-                  de verificar todos los datos antes de guardar.
-                </p>
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 text-white flex items-center justify-center text-2xl font-bold shadow-md">
+                {empleado.nombre.charAt(0)}
+                {empleado.apellido.charAt(0)}
               </div>
+            </motion.div>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  value={empleado.nombre}
+                  onChange={handleInputChange}
+                  placeholder="Nombre"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Apellido</label>
+                <input
+                  type="text"
+                  name="apellido"
+                  value={empleado.apellido}
+                  onChange={handleInputChange}
+                  placeholder="Apellido"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={empleado.email}
+                  onChange={handleInputChange}
+                  placeholder="Email"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                <input
+                  type="text"
+                  name="telefono"
+                  value={empleado.telefono}
+                  onChange={handleInputChange}
+                  placeholder="Teléfono"
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Departamento</label>
+                <select
+                  name="departamento"
+                  value={empleado.departamento.id}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                >
+                  {departamentos.map((dep) => (
+                    <option key={dep.id} value={dep.id}>
+                      {dep.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Cargo</label>
+                <select
+                  name="cargo"
+                  value={empleado.cargo.id}
+                  onChange={handleInputChange}
+                  className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none transition-all duration-200"
+                >
+                  {cargos.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                transition={{ duration: 0.2 }}
+                className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-100 rounded-lg p-4 shadow-sm"
+              >
+                <div className="flex items-center">
+                  <span className="text-2xl mr-2">💰</span>
+                  <div>
+                    <p className="text-sm font-medium text-gray-700">Salario base</p>
+                    <p className="text-lg font-bold text-green-700">
+                      ${empleado.cargo.salarioBase.toLocaleString("es")}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* Notificaciones */}
-      <AnimatePresence>
-        {notification && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className={`fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-md ${
-              notification.type === "success"
-                ? "bg-green-50 border border-green-200"
-                : "bg-red-50 border border-red-200"
-            }`}
-          >
-            <div className="flex items-center">
-              {notification.type === "success" ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+          {/* Footer */}
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+            <motion.button
+              whileHover={{ scale: 1.02, boxShadow: "0 5px 15px rgba(0, 0, 0, 0.1)" }}
+              whileTap={{ scale: 0.98 }}
+              onClick={guardarCambios}
+              disabled={isSaving}
+              className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center"
+            >
+              {isSaving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                  Guardando...
+                </>
               ) : (
-                <AlertTriangle className="h-5 w-5 text-red-500 mr-3 flex-shrink-0" />
+                <>💾 Guardar Cambios</>
               )}
-              <p
-                className={`text-sm font-medium ${
-                  notification.type === "success" ? "text-green-800" : "text-red-800"
-                }`}
-              >
-                {notification.message}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
+            </motion.button>
+          </div>
+        </motion.div>
+      </div>
+    </motion.div>
   )
 }
 
