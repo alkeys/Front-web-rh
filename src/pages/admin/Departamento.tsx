@@ -18,6 +18,8 @@ import {
   ArrowUpAZ,
   AlertTriangle,
 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+
 
 interface DepartamentoData {
   id: number
@@ -35,6 +37,7 @@ const Departamento: React.FC = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc" | "cantidad-asc" | "cantidad-desc">("asc")
   const [notification, setNotification] = useState<{ type: "success" | "error"; message: string } | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date())
+  const navigate = useNavigate()
 
   // URLs de API
   const urlapiDerpartamentoAllCantEmpleado = import.meta.env.VITE_API_URL_GET_DEPARTAMENTO_ALL_CANT_EMPLEADOS
@@ -201,6 +204,8 @@ const Departamento: React.FC = () => {
       },
     },
   }
+
+
 
   // Función para formatear la fecha
   const formatDate = (date: Date) => {
@@ -540,7 +545,11 @@ const Departamento: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <button className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm 
+                        text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none
+                         focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                         onClick={() =>  navigate(`/Dashboard/Departamentos/${dep.id}`)}
+                         >
                           <Edit className="h-3.5 w-3.5 mr-1" />
                           Editar
                         </button>
