@@ -26,6 +26,7 @@ import Empleados from "./Empleados"
 import Departamento from "./Departamento"
 import Ajustes from "./Ajustes"
 import Evaluaciones from "./Evaluaciones"
+import Planilla from "../planilla/Planilla"
 
 interface NavItem {
   id: string
@@ -120,6 +121,8 @@ export default function AdminPanel() {
         return <Departamento />
       case "settings":
         return <Ajustes />
+      case "planilla":
+      return <Planilla />
       default:
         return <Dashboard />
     }
@@ -130,8 +133,10 @@ export default function AdminPanel() {
     { id: "dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
     { id: "employees", label: "Empleados", icon: <Users className="h-5 w-5" /> },
     { id: "evaluaciones", label: "Evaluaciones", icon: <ClipboardList className="h-5 w-5" /> },
+    { id: "planilla", label: "Planilla", icon: <ClipboardList className="h-5 w-5" /> },
     { id: "jobs", label: "Departamentos", icon: <Building className="h-5 w-5" /> },
     { id: "settings", label: "Ajustes", icon: <Settings className="h-5 w-5" /> },
+  
   ]
 
   return (
