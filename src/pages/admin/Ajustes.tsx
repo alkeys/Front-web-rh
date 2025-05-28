@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useUserContext } from "../../context/UserContext"
 import { motion, AnimatePresence } from "framer-motion"
-import { Settings, UserCog, ClipboardList, UserPlus, Building, Users, Bell, ChevronDown, Car } from "lucide-react"
+import { Settings, UserCog, ClipboardList, UserPlus, Building, Users, ChevronDown, Car } from "lucide-react"
 
 // Importación de componentes
 import Config from "../ajustes/Config"

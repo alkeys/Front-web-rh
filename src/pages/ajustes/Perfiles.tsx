@@ -4,7 +4,7 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
-import { Users, Edit3, Trash2, UserPlus, Search, Filter, AlertTriangle, CheckCircle } from "lucide-react"
+import { Users, Edit3, Trash2, Search, Filter, AlertTriangle, CheckCircle } from "lucide-react"
 
 interface Usuario {
   id: number
