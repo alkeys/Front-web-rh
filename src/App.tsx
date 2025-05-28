@@ -7,6 +7,8 @@ import AdminPanel from './pages/admin/AdminPanel';
 import PaginaParaEvaluarEmpleado from './pages/pagesEvaluaciones/PaginaParaEvaluarEmpleado';
 import InfoEmpleado from './pages/empleados/infoempleados';
 import RhPanel from './pages/EvaluacionPanel/RhPanel';
+import EditarDepartamento from './pages/departamentos/EditarDepartamento';
+import EditarUser from './pages/user/Editaruser';
 
 function App() {
   return (
@@ -19,6 +21,9 @@ function App() {
           <Route path="/Evaluaciones" element={<PaginaParaEvaluarEmpleado />} />
           <Route path="/Dashboard/empleados/:id" element={<InfoEmpleado />} />
           <Route path='/Recursos_Humanos' element={<RhPanel />} />
+          <Route path="Dashboard/Departamentos/:id" element={<EditarDepartamento/>} />
+          <Route path="/Dashboard/Users/:id" element={<EditarUser />} />
+          
         </Routes>
       </Router>
     </UserProvider>
