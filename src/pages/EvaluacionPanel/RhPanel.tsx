@@ -30,6 +30,7 @@ import CrearTrabajador from "../ajustes/CrearTrabajador"
 import CrearEvaluacion from "./EvaluacionCrear"
 import CrearPregunta from "./CrearPregunta"
 import EditarEvaluacionYPreguntas from "./EditarEvaluacionYPreguntas"
+import Planilla from "../planilla/Planilla"
 
 interface NavItem {
   id: string
@@ -123,6 +124,8 @@ export default function RhPanel() {
         return <Evaluaciones />
       case "newEmpleado":
         return <CrearTrabajador />
+        case "planilla":
+          return <Planilla />
       case "newEvaluacion":
         return <CrearEvaluacion />
       case "NewPregutas":
@@ -138,6 +141,7 @@ export default function RhPanel() {
   const navItems: NavItem[] = [
     { id: "Welcome", label: "Inicio", icon: <Home className="h-5 w-5" /> },
     { id: "employees", label: "Empleados", icon: <Users className="h-5 w-5" /> },
+    { id: "planilla", label: "Planilla", icon: <ClipboardList className="h-5 w-5" /> },
     { id: "evaluaciones", label: "Evaluaciones", icon: <ClipboardList className="h-5 w-5" /> },
     { id: "newEmpleado", label: "Nuevo Empleado", icon: <UserPlus className="h-5 w-5" />, category: "crear" },
     { id: "newEvaluacion", label: "Nueva Evaluación", icon: <FileText className="h-5 w-5" />, category: "crear" },

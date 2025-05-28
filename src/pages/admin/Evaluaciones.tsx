@@ -1,5 +1,7 @@
-"use client"
 
+import { useRef } from "react"
+import jsPDF from "jspdf"
+import html2canvas from "html2canvas"
 import type React from "react"
 import { useEffect, useState } from "react"
 import { Bar, Pie } from "react-chartjs-2"
@@ -32,12 +34,28 @@ interface Empleado {
 }
 
 const Evaluaciones: React.FC = () => {
+  const exportRef = useRef<HTMLDivElement>(null)
   const url = import.meta.env.VITE_API_URL_EVALUACIONES_ALL
   const [empleados, setEmpleados] = useState<Empleado[]>([])
   const [departamentos, setDepartamentos] = useState<string[]>([])
   const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState<string>("")
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState<Empleado | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+
+  const exportarPDF = async () => {
+    if (!exportRef.current) return
+  
+    const canvas = await html2canvas(exportRef.current, { scale: 2 })
+    const imgData = canvas.toDataURL("image/png")
+    const pdf = new jsPDF("p", "mm", "a4")
+    const imgProps = pdf.getImageProperties(imgData)
+    const pdfWidth = pdf.internal.pageSize.getWidth()
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width
+  
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight)
+    pdf.save(`${empleadoSeleccionado?.nombre || "evaluacion"}.pdf`)
+  }
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -250,7 +268,7 @@ const Evaluaciones: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white text-gray-800">
+    <div className="min-h-screen bg-white text-gray-800" ref={exportRef}>
       {/* Header */}
       <div className="border-b bg-white sticky top-0 z-10 mb-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -280,7 +298,15 @@ const Evaluaciones: React.FC = () => {
               </div>
             </div>
           </div>
+          <button
+  onClick={exportarPDF}
+  className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition"
+>
+  Exportar a PDF
+</button>
+
         </div>
+    
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
