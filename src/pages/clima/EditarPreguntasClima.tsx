@@ -4,7 +4,22 @@ import type React from "react"
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
-import { Edit3, Trash2, Save, X, AlertTriangle, CheckCircle, AlertCircle, Loader2, MessageSquare, Search, FileText, Target, Settings, Database, BarChart3, Plus } from 'lucide-react'
+import {
+  Edit3,
+  Trash2,
+  Save,
+  X,
+  AlertTriangle,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  MessageSquare,
+  Search,
+  FileText,
+  Target,
+  Database,
+  BarChart3,
+} from "lucide-react"
 
 interface Dimension {
   id: number
@@ -49,14 +64,11 @@ const EditarPreguntasClima: React.FC = () => {
   const cargarDatos = async () => {
     try {
       setLoading(true)
-      const [resPreg, resDim] = await Promise.all([
-        axios.get(API_PREGUNTAS_ALL),
-        axios.get(API_DIMENSIONES_ALL),
-      ])
+      const [resPreg, resDim] = await Promise.all([axios.get(API_PREGUNTAS_ALL), axios.get(API_DIMENSIONES_ALL)])
       setPreguntas(resPreg.data)
       setFilteredPreguntas(resPreg.data)
       setDimensiones(resDim.data)
-      
+
       if (resPreg.data.length === 0) {
         setAlert({
           type: "warning",
@@ -82,9 +94,10 @@ const EditarPreguntasClima: React.FC = () => {
     let filtered = preguntas
 
     if (searchTerm) {
-      filtered = filtered.filter((pregunta) =>
-        pregunta.texto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        pregunta.idDim.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+      filtered = filtered.filter(
+        (pregunta) =>
+          pregunta.texto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          pregunta.idDim.nombre.toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
 
@@ -183,6 +196,21 @@ const EditarPreguntasClima: React.FC = () => {
   const cancelarEdicion = () => {
     setEditando(null)
     setErrors({ texto: "", dimension: "" })
+  }
+
+  const editarPregunta = (pregunta: Pregunta) => {
+    setEditando(pregunta)
+    // Scroll automático después de un pequeño delay para que el DOM se actualice
+    setTimeout(() => {
+      const element = document.getElementById(`pregunta-${pregunta.id}`)
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest",
+        })
+      }
+    }, 100)
   }
 
   if (loading) {
@@ -321,12 +349,12 @@ const EditarPreguntasClima: React.FC = () => {
               >
                 <option value="all">📋 Todas las dimensiones ({preguntas.length} preguntas)</option>
                 {dimensiones.map((dimension) => {
-                  const preguntasPorDimension = preguntas.filter(p => p.idDim.id === dimension.id).length;
+                  const preguntasPorDimension = preguntas.filter((p) => p.idDim.id === dimension.id).length
                   return (
                     <option key={dimension.id} value={dimension.id.toString()}>
                       🎯 {dimension.nombre} ({preguntasPorDimension} preguntas)
                     </option>
-                  );
+                  )
                 })}
               </select>
             </div>
@@ -349,8 +377,8 @@ const EditarPreguntasClima: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {dimensiones.map((dimension, index) => {
-                const preguntasPorDimension = preguntas.filter(p => p.idDim.id === dimension.id);
-                const isSelected = selectedDimension === dimension.id.toString();
+                const preguntasPorDimension = preguntas.filter((p) => p.idDim.id === dimension.id)
+                const isSelected = selectedDimension === dimension.id.toString()
                 return (
                   <motion.button
                     key={dimension.id}
@@ -367,11 +395,11 @@ const EditarPreguntasClima: React.FC = () => {
                       <h4 className={`font-medium ${isSelected ? "text-emerald-900" : "text-gray-900"}`}>
                         {dimension.nombre}
                       </h4>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        isSelected 
-                          ? "bg-emerald-200 text-emerald-800" 
-                          : "bg-gray-100 text-gray-800"
-                      }`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          isSelected ? "bg-emerald-200 text-emerald-800" : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
                         {preguntasPorDimension.length} preguntas
                       </span>
                     </div>
@@ -381,9 +409,12 @@ const EditarPreguntasClima: React.FC = () => {
                     {preguntasPorDimension.length > 0 && (
                       <div className="mt-3 space-y-1">
                         {preguntasPorDimension.slice(0, 2).map((pregunta) => (
-                          <div key={pregunta.id} className={`text-xs p-2 rounded ${
-                            isSelected ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-600"
-                          }`}>
+                          <div
+                            key={pregunta.id}
+                            className={`text-xs p-2 rounded ${
+                              isSelected ? "bg-emerald-100 text-emerald-800" : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
                             "{pregunta.texto.substring(0, 60)}..."
                           </div>
                         ))}
@@ -395,7 +426,7 @@ const EditarPreguntasClima: React.FC = () => {
                       </div>
                     )}
                   </motion.button>
-                );
+                )
               })}
             </div>
             {selectedDimension !== "all" && (
@@ -423,32 +454,69 @@ const EditarPreguntasClima: React.FC = () => {
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
               <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchTerm || selectedDimension !== "all" ? "No se encontraron preguntas" : "No hay preguntas registradas"}
+                {searchTerm || selectedDimension !== "all"
+                  ? "No se encontraron preguntas"
+                  : "No hay preguntas registradas"}
               </h3>
               <p className="text-gray-600">
-                {searchTerm || selectedDimension !== "all" ? "Intente con otros criterios de búsqueda" : "Registre la primera pregunta para comenzar"}
+                {searchTerm || selectedDimension !== "all"
+                  ? "Intente con otros criterios de búsqueda"
+                  : "Registre la primera pregunta para comenzar"}
               </p>
             </div>
           ) : (
             filteredPreguntas.map((pregunta, index) => (
               <motion.div
                 key={pregunta.id}
+                id={`pregunta-${pregunta.id}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 + 0.4 }}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+                className={`bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden ${editando?.id === pregunta.id ? "border-emerald-500 shadow-emerald-200" : ""}`}
               >
                 {editando?.id === pregunta.id ? (
                   // Modo Edición
                   <div>
-                    <div className="bg-emerald-50 border-b border-emerald-200 p-6">
-                      <div className="flex items-center space-x-4">
-                        <div className="h-10 w-10 rounded-lg bg-emerald-600 flex items-center justify-center">
-                          <Edit3 className="h-5 w-5 text-white" />
+                    <div className="sticky top-0 z-10 bg-emerald-50 border-b border-emerald-200 p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <div className="h-10 w-10 rounded-lg bg-emerald-600 flex items-center justify-center">
+                            <Edit3 className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-medium text-gray-900">Editando Pregunta</h3>
+                            <p className="text-gray-600 text-sm">Modifique los datos de la pregunta</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="text-lg font-medium text-gray-900">Editando Pregunta</h3>
-                          <p className="text-gray-600 text-sm">Modifique los datos de la pregunta</p>
+                        <div className="flex space-x-2">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={guardarCambios}
+                            disabled={saving}
+                            className="bg-emerald-600 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            {saving ? (
+                              <>
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <span>Guardando...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Save className="h-4 w-4" />
+                                <span>Guardar</span>
+                              </>
+                            )}
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={cancelarEdicion}
+                            disabled={saving}
+                            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Cancelar
+                          </motion.button>
                         </div>
                       </div>
                     </div>
@@ -478,7 +546,7 @@ const EditarPreguntasClima: React.FC = () => {
                         <select
                           value={editando.idDim.id}
                           onChange={(e) => {
-                            const selectedDim = dimensiones.find((d) => d.id === parseInt(e.target.value))
+                            const selectedDim = dimensiones.find((d) => d.id === Number.parseInt(e.target.value))
                             if (selectedDim) {
                               setEditando({ ...editando, idDim: selectedDim })
                             }
@@ -500,37 +568,6 @@ const EditarPreguntasClima: React.FC = () => {
                             <span>{errors.dimension}</span>
                           </p>
                         )}
-                      </div>
-
-                      <div className="flex space-x-4 pt-4 border-t border-gray-200">
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={guardarCambios}
-                          disabled={saving}
-                          className="flex-1 bg-emerald-600 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-emerald-700 transition-colors disabled:opacity-50"
-                        >
-                          {saving ? (
-                            <>
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                              <span>Guardando...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Save className="h-4 w-4" />
-                              <span>Guardar Cambios</span>
-                            </>
-                          )}
-                        </motion.button>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={cancelarEdicion}
-                          disabled={saving}
-                          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
-                        >
-                          Cancelar
-                        </motion.button>
                       </div>
                     </div>
                   </div>
@@ -577,7 +614,8 @@ const EditarPreguntasClima: React.FC = () => {
                               {pregunta.idDim.nombre}
                             </span>
                             <span className="text-sm text-emerald-600">
-                              {preguntas.filter(p => p.idDim.id === pregunta.idDim.id).length} preguntas en esta dimensión
+                              {preguntas.filter((p) => p.idDim.id === pregunta.idDim.id).length} preguntas en esta
+                              dimensión
                             </span>
                           </div>
                           <p className="text-sm text-emerald-700">{pregunta.idDim.descripcion}</p>
@@ -586,20 +624,20 @@ const EditarPreguntasClima: React.FC = () => {
 
                       <div className="flex space-x-4">
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setEditando(pregunta)}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => editarPregunta(pregunta)}
                           className="flex-1 bg-emerald-600 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center space-x-2 hover:bg-emerald-700 transition-colors"
                         >
                           <Edit3 className="h-4 w-4" />
                           <span>Editar</span>
                         </motion.button>
                         <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() => setShowDeleteModal({ show: true, pregunta })}
                           disabled={deleting === pregunta.id}
-                          className="px-6 py-2 border border-red-300 text-red-700 rounded-lg font-medium hover:bg-red-50 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+                          className="px-4 py-2 border border-red-300 text-red-700 rounded-lg font-medium hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
                         >
                           {deleting === pregunta.id ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -638,7 +676,8 @@ const EditarPreguntasClima: React.FC = () => {
                   </div>
                   <h3 className="text-lg font-medium text-gray-900 mb-2">Confirmar Eliminación</h3>
                   <p className="text-gray-600 mb-6">
-                    ¿Está seguro de que desea eliminar esta pregunta? Esta acción no se puede deshacer y eliminará todas las respuestas asociadas.
+                    ¿Está seguro de que desea eliminar esta pregunta? Esta acción no se puede deshacer y eliminará todas
+                    las respuestas asociadas.
                   </p>
                   <div className="flex space-x-4">
                     <motion.button
