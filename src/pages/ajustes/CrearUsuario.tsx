@@ -96,7 +96,7 @@ const CrearUsuario: React.FC = () => {
   }
 
   // Lista de roles predefinidos
-  const roles = ["Administrador", "EmpleadoRH", "Evaluador"]
+  const roles = ["Administrador", "EmpleadoRH", "Evaluador","EmpleadoEV"]
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
