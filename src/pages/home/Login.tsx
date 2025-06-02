@@ -99,6 +99,9 @@ export default function Login() {
           navigate("/Dashboard")
         } else if (userData.rol === "Evaluador") {
           navigate("/Evaluaciones")
+        }else if (userData.rol === "EmpleadoEV") {
+          navigate("/Evaluaciones/empleados")
+        
         } else {
           setError("Rol no reconocido.")
           setSuccessMessage("")
