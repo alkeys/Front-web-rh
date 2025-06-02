@@ -376,7 +376,7 @@ const EditarPreguntasClima: React.FC = () => {
               <h3 className="text-lg font-medium text-gray-900">Distribución de Preguntas por Dimensión</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {dimensiones.map((dimension, index) => {
+              {dimensiones.map((dimension) => {
                 const preguntasPorDimension = preguntas.filter((p) => p.idDim.id === dimension.id)
                 const isSelected = selectedDimension === dimension.id.toString()
                 return (
