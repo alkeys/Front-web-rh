@@ -31,6 +31,11 @@ import CrearEvaluacion from "./EvaluacionCrear"
 import CrearPregunta from "./CrearPregunta"
 import EditarEvaluacionYPreguntas from "./EditarEvaluacionYPreguntas"
 import Planilla from "../planilla/Planilla"
+import ResultadosClima from "../clima/ResultadosClima"
+import CrearDimension from "../clima/CrearDimension"
+import CrearPreguntaClima from "../clima/CrearPreguntaClima"
+import EditarDimensiones from "../clima/EditarDimensiones"
+import EditarPreguntasClima from "../clima/EditarPreguntasClima"
 
 interface NavItem {
   id: string
@@ -132,6 +137,16 @@ export default function RhPanel() {
         return <CrearPregunta />
       case "EditarEvaluacionAndPreguntas":
         return <EditarEvaluacionYPreguntas />
+      case "Clima Organizacional":
+        return <ResultadosClima />
+      case "newDimension":
+        return <CrearDimension />
+      case "newPregunta":
+        return <CrearPreguntaClima />
+      case "EditarDimensiones":
+        return <EditarDimensiones />
+      case "EditarPregutasClima":
+        return <EditarPreguntasClima />
       default:
         return <Hola nombre={user?.username || ""} />
     }
@@ -141,22 +156,28 @@ export default function RhPanel() {
   const navItems: NavItem[] = [
     { id: "Welcome", label: "Inicio", icon: <Home className="h-5 w-5" /> },
     { id: "employees", label: "Empleados", icon: <Users className="h-5 w-5" /> },
-    { id: "planilla", label: "Planilla", icon: <ClipboardList className="h-5 w-5" /> },
-    { id: "evaluaciones", label: "Evaluaciones", icon: <ClipboardList className="h-5 w-5" /> },
+    { id: "planilla", label: "Planilla", icon: <ClipboardList className="h-5 w-5" />, category: "Utilidades" },
+    { id: "Clima Organizacional", label: "Clima Organizacional", icon: <ClipboardList className="h-5 w-5" /> , category: "Utilidades" },
+    { id: "evaluaciones", label: "Evaluaciones", icon: <ClipboardList className="h-5 w-5" />, category: "Utilidades" },
     { id: "newEmpleado", label: "Nuevo Empleado", icon: <UserPlus className="h-5 w-5" />, category: "crear" },
     { id: "newEvaluacion", label: "Nueva Evaluación", icon: <FileText className="h-5 w-5" />, category: "crear" },
     { id: "NewPregutas", label: "Nueva Pregunta", icon: <FileQuestion className="h-5 w-5" />, category: "crear" },
+    { id: "newDimension", label: "Nueva Dimensión", icon: <FileText className="h-5 w-5" />, category: "crear" },
+    { id: "newPregunta", label: "Nueva Pregunta Dimensión", icon: <FileQuestion className="h-5 w-5" />, category: "crear" },
     {
       id: "EditarEvaluacionAndPreguntas",
       label: "Editar Evaluación",
       icon: <Edit className="h-5 w-5" />,
       category: "editar",
     },
+    { id: "EditarDimensiones", label: "Editar Dimensiones", icon: <Edit className="h-5 w-5" />, category: "editar" },
+    { id: "EditarPregutasClima", label: "Editar Preguntas Clima", icon: <Edit className="h-5 w-5" />, category: "editar" },
   ]
 
   // Filtrar elementos de navegación por categoría
   const mainNavItems = navItems.filter((item) => !item.category)
   const createNavItems = navItems.filter((item) => item.category === "crear")
+  const ClimaOrganizacionalNavItems = navItems.filter((item) => item.category === "Utilidades")
   const editNavItems = navItems.filter((item) => item.category === "editar")
 
   return (
@@ -177,6 +198,8 @@ export default function RhPanel() {
               </div>
             </div>
 
+
+
             {/* Navegación para escritorio */}
             <nav className="hidden md:flex space-x-1">
               {mainNavItems.map((item) => (
@@ -193,6 +216,40 @@ export default function RhPanel() {
                   {item.label}
                 </button>
               ))}
+
+              {/* Menú desplegable para utilidades  */}
+              <div className="relative group">
+                <button
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 ease-in-out flex items-center ${
+                    navItems.some((item) => item.id === "Clima Organizacional" && activeTab === item.id)
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  }`}
+                >
+                  <ClipboardList className="mr-2 h-5 w-5" />
+                  Utilidades
+                  <ChevronDown className="ml-1 h-4 w-4" />
+                </button>
+                <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className="py-1">
+                    {ClimaOrganizacionalNavItems.map((item) => (
+                      <button
+                        key={item.id}
+                        className={`w-full text-left block px-4 py-2 text-sm ${
+                          activeTab === item.id ? "bg-emerald-50 text-emerald-700" : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                        onClick={() => setActiveTab(item.id)}
+                      >
+                        <div className="flex items-center">
+                          <span className="mr-2">{item.icon}</span>
+                          {item.label}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
 
               {/* Menú desplegable para Crear */}
               <div className="relative group">
