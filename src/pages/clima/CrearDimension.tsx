@@ -108,7 +108,9 @@ const CrearDimension: React.FC = () => {
     setNombre(ejemplo.nombre)
     setDescripcion(ejemplo.descripcion)
     setTouched({ nombre: true, descripcion: true })
+    console.log("Ejemplo aplicado:", ejemploSeleccionado)
     setEjemploSeleccionado(null)
+  
   }
 
   return (
