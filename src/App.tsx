@@ -9,6 +9,7 @@ import InfoEmpleado from './pages/empleados/infoempleados';
 import RhPanel from './pages/EvaluacionPanel/RhPanel';
 import EditarDepartamento from './pages/departamentos/EditarDepartamento';
 import EditarUser from './pages/user/Editaruser';
+import ClimaForm from './pages/clima/ClimaForm';
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
           <Route path='/Recursos_Humanos' element={<RhPanel />} />
           <Route path="Dashboard/Departamentos/:id" element={<EditarDepartamento/>} />
           <Route path="/Dashboard/Users/:id" element={<EditarUser />} />
-          
+          <Route path="Evaluaciones/empleados" element={<ClimaForm />} />
         </Routes>
       </Router>
     </UserProvider>
