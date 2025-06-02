@@ -436,7 +436,7 @@ const ResultadosClima: React.FC = () => {
                           <YAxis tick={{ fontSize: 12, fill: "#6b7280" }} domain={[0, 5]} />
                           <Tooltip content={<CustomTooltip />} />
                           <Bar dataKey="promedio" radius={[4, 4, 0, 0]}>
-                            {chartData.map((entry, index) => (
+                            {chartData.map((_, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Bar>
@@ -455,7 +455,7 @@ const ResultadosClima: React.FC = () => {
                             label={({ name, value }) => `${name.substring(0, 8)}: ${value.toFixed(1)}`}
                             labelLine={false}
                           >
-                            {pieData.map((entry, index) => (
+                            {pieData.map((_, index) => (
                               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                             ))}
                           </Pie>
