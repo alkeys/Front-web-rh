@@ -33,13 +33,13 @@ para mas tarde xd
 
 http://localhost:8080/swagger-ui/index.html
       """
+[![image.png](https://i.postimg.cc/sXtfS1yc/image.png)](https://postimg.cc/ftfhQzVt)
 
-[![Screenshot-2025-01-27-at-09-25-17-RRHH.png](https://i.postimg.cc/m2F8MjTk/Screenshot-2025-01-27-at-09-25-17-RRHH.png)](https://postimg.cc/CzSGpjBp)
+[![image.png](https://i.postimg.cc/cCwxcZLN/image.png)](https://postimg.cc/jnqYspf8)
 
+[![image.png](https://i.postimg.cc/ZYd5mPFD/image.png)](https://postimg.cc/8sTSB6Yh)
 
-[![Screenshot-2025-01-27-at-09-25-56-RRHH.png](https://i.postimg.cc/htWM0mGr/Screenshot-2025-01-27-at-09-25-56-RRHH.png)](https://postimg.cc/Wh8MNhgF)
+[![image.png](https://i.postimg.cc/qMHMvt1B/image.png)](https://postimg.cc/8swVyC8x)
 
+[![image.png](https://i.postimg.cc/Hs0WcpNw/image.png)](https://postimg.cc/SJsbHpkR)
 
-[![Screenshot-2025-01-27-at-09-12-35-RRHH.png](https://i.postimg.cc/Dwr6pzJK/Screenshot-2025-01-27-at-09-12-35-RRHH.png)](https://postimg.cc/Bjv2X4Bh)
-
-[![Screenshot-2025-01-27-at-09-28-12-RRHH.png](https://i.postimg.cc/ZRRLqFfT/Screenshot-2025-01-27-at-09-28-12-RRHH.png)](https://postimg.cc/sBkW6Sd8)
